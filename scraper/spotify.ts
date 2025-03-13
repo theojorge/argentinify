@@ -10,20 +10,19 @@ dotenv.config();
 
 // Configurar Spotify API
 const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  clientId: process.env.SPOTIFY_CLIENT_ID || process.env.VITE_SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET || process.env.VITE_SPOTIFY_CLIENT_SECRET,
 });
 
 // Configuración de MongoDB
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(
-      "mongodb://localhost:27017/spotify_artists"
-    );
+    const mongoUri = process.env.MONGODB_URI || process.env.VITE_MONGODB_URI || "mongodb://localhost:27017/spotify_artists";
+    const conn = await mongoose.connect(mongoUri);
     console.log(`MongoDB conectada: ${conn.connection.host}`);
     return conn;
   } catch (error) {
-    console.error(`Error al conectar a MongoDB: ${error.message}`);
+    console.error(`Error al conectar a MongoDB: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     process.exit(1);
   }
 };
@@ -56,9 +55,6 @@ const artistSchema = new mongoose.Schema(
   },
   { suppressReservedKeysWarning: true }
 );
-
-// Eliminar todos los índices existentes y recrear solo el de spotifyId
-artistSchema.index({ spotifyId: 1 }, { unique: true });
 
 const ArtistModel = mongoose.model("Artist", artistSchema);
 

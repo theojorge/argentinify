@@ -1,4 +1,3 @@
-import { getArtistList } from "@/utils/Artist";
 import { Artist } from "@/utils/Types";
 import CurrentScore from "@/components/CurrentScore";
 import HighScore from "@/components/HighScore";
@@ -9,16 +8,17 @@ import { GameContext } from "@/App";
 import React from "react";
 
 const Game = () => {
-  const { setHasUserLost, score, setScore, setIsButtonVisible } =
-    useContext(GameContext);
+  const {
+    setHasUserLost,
+    score,
+    setScore,
+    setIsButtonVisible,
+    allArtists,
+    unusedArtists,
+    setUnusedArtists,
+  } = useContext(GameContext);
 
   const [loading, setLoading] = useState(true);
-  const [artistList, setArtistList] = useState<Artist[]>([]);
-  const [usedArtists, setUsedArtists] = useState<Set<string>>(() => {
-    // Recuperar artistas usados del localStorage
-    const saved = localStorage.getItem('used-artists');
-    return saved ? new Set(JSON.parse(saved)) : new Set();
-  });
   const [leftArtist, setLeftArtist] = useState<Artist>({
     artist: "Loading...",
     listeners: "0",
@@ -46,108 +46,80 @@ const Game = () => {
   }, []);
 
   const getRandomArtist = () => {
-    if (artistList.length === 0) {
-      return {
-        artist: 'Loading...',
-        listeners: '0',
-        image_url: '',
-      };
-    }
+    // Si no quedan artistas sin usar, reiniciar la lista
+    if (unusedArtists.length === 0) {
+      console.log("No hay artistas disponibles, reiniciando lista...");
+      // Filtrar el artista actual de la izquierda para evitar repeticiones
+      const availableArtists = allArtists.filter(
+        (artist) =>
+          artist.artist !== rightArtist.artist &&
+          artist.artist !== leftArtist.artist
+      );
+      const randomIndex = getRandomNumber(1, availableArtists.length);
+      const artist = availableArtists[randomIndex - 1];
 
-    // Filtrar artistas no usados
-    const availableArtists = artistList.filter(
-      (artist) => !usedArtists.has(artist.artist),
-    );
+      // Eliminar el artista de la lista de no usados y actualizar localStorage
+      const newUnusedArtists = availableArtists.filter(
+        (a) => a.artist !== artist.artist
+      );
+      setUnusedArtists(newUnusedArtists);
+      localStorage.setItem("unused-artists", JSON.stringify(newUnusedArtists));
 
-    // Si no quedan artistas disponibles, reiniciar la lista de usados
-    if (availableArtists.length === 0) {
-      setUsedArtists(new Set());
-      localStorage.setItem('used-artists', JSON.stringify([]));
-      return artistList[getRandomNumber(1, artistList.length) - 1]; // Seleccionar de la lista completa
+      return artist;
     }
 
     // Obtener un índice aleatorio entre 1 y el tamaño de la lista de disponibles
-    const randomIndex = getRandomNumber(1, availableArtists.length);
-    const artist = availableArtists[randomIndex - 1];
+    const randomIndex = getRandomNumber(1, unusedArtists.length);
+    const artist = unusedArtists[randomIndex - 1];
 
-    // Actualizar la lista de artistas usados en estado y localStorage
-    const newUsedArtists = new Set([...usedArtists, artist.artist]);
-    setUsedArtists(newUsedArtists);
-    localStorage.setItem('used-artists', JSON.stringify([...newUsedArtists]));
+    // Eliminar el artista de la lista de no usados y actualizar localStorage
+    const newUnusedArtists = unusedArtists.filter(
+      (a) => a.artist !== artist.artist
+    );
+    setUnusedArtists(newUnusedArtists);
+    localStorage.setItem("unused-artists", JSON.stringify(newUnusedArtists));
 
     return artist;
   };
 
-  // Cargar artistas inicialmente
+  // Inicializar artistas
   useEffect(() => {
-    const loadArtists = async () => {
-      try {
-        const artists = await getArtistList();
-        if (artists && artists.length > 0) {
-          // Mezclar el array de artistas
-          const shuffledArtists = [...artists].sort(() => Math.random() - 0.5);
-          setArtistList(shuffledArtists);
+    if (unusedArtists.length <= 1 && loading) {
+      console.log("No hay artistas disponibles, reiniciando lista...");
+      setUnusedArtists([...allArtists]);
+      localStorage.setItem("unused-artists", JSON.stringify([...allArtists]));
+    }
+    if (unusedArtists.length > 1 && loading) {
+      // Mezclar el array de artistas disponibles
+      const shuffledArtists = [...unusedArtists].sort(
+        () => Math.random() - 0.5
+      );
 
-          // Filtrar artistas no usados
-          const availableArtists = shuffledArtists.filter(
-            (artist) => !usedArtists.has(artist.artist),
-          );
+      // Seleccionar el primer artista
+      const firstIndex = getRandomNumber(1, shuffledArtists.length);
+      const firstArtist = shuffledArtists[firstIndex - 1];
 
-          // Si no hay artistas disponibles, reiniciar la lista
-          if (availableArtists.length === 0) {
-            setUsedArtists(new Set());
-            localStorage.setItem('used-artists', JSON.stringify([]));
-            // Usar la lista completa mezclada
-            const firstIndex = getRandomNumber(1, shuffledArtists.length);
-            const firstArtist = shuffledArtists[firstIndex - 1];
+      // Seleccionar el segundo artista (que no sea el mismo)
+      let secondIndex;
+      do {
+        secondIndex = getRandomNumber(1, shuffledArtists.length);
+      } while (secondIndex === firstIndex);
+      const secondArtist = shuffledArtists[secondIndex - 1];
 
-            let secondIndex;
-            do {
-              secondIndex = getRandomNumber(1, shuffledArtists.length);
-            } while (secondIndex === firstIndex);
+      // Actualizar la lista de artistas no usados
+      const newUnusedArtists = shuffledArtists.filter(
+        (artist) =>
+          artist.artist !== firstArtist.artist &&
+          artist.artist !== secondArtist.artist
+      );
+      setUnusedArtists(newUnusedArtists);
+      localStorage.setItem("unused-artists", JSON.stringify(newUnusedArtists));
 
-            const secondArtist = shuffledArtists[secondIndex - 1];
-
-            // Actualizar la lista de artistas usados con los dos primeros
-            const newUsedArtists = new Set([firstArtist.artist, secondArtist.artist]);
-            setUsedArtists(newUsedArtists);
-            localStorage.setItem('used-artists', JSON.stringify([...newUsedArtists]));
-
-            setLeftArtist(firstArtist);
-            setRightArtist(secondArtist);
-          } else {
-            // Usar artistas disponibles
-            const firstIndex = getRandomNumber(1, availableArtists.length);
-            const firstArtist = availableArtists[firstIndex - 1];
-
-            let secondIndex;
-            do {
-              secondIndex = getRandomNumber(1, availableArtists.length);
-            } while (secondIndex === firstIndex);
-
-            const secondArtist = availableArtists[secondIndex - 1];
-
-            // Actualizar la lista de artistas usados
-            const newUsedArtists = new Set([
-              ...usedArtists,
-              firstArtist.artist,
-              secondArtist.artist,
-            ]);
-            setUsedArtists(newUsedArtists);
-            localStorage.setItem('used-artists', JSON.stringify([...newUsedArtists]));
-
-            setLeftArtist(firstArtist);
-            setRightArtist(secondArtist);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading artists:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadArtists();
-  }, []);
+      setLeftArtist(firstArtist);
+      setRightArtist(secondArtist);
+      setLoading(false);
+    }
+  }, [unusedArtists, loading]);
 
   // Actualizar high score
   useEffect(() => {

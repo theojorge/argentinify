@@ -46,7 +46,7 @@ const RightArtist = (props: GuessArtist) => {
         </>
       )}
 
-      {!isButtonVisible && <Listeners listeners={parseInt(listeners)} />}
+      {!isButtonVisible && <Listeners listeners={listeners} />}
 
       <p className="mt-2 text-center text-sm text-white drop-shadow-md">
         oyentes mensuales

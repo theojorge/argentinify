@@ -1,4 +1,4 @@
-import { Listeners } from "@/utils/Types";
+import type { Listeners } from "@/utils/Types";
 import { useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useRef } from "react";
 
@@ -10,7 +10,8 @@ export function Listeners(props: Listeners) {
   const springValue = useSpring(motionValue, { duration: 750 });
 
   useEffect(() => {
-    motionValue.set(listeners);
+    const numericValue = typeof listeners === 'string' ? parseInt(listeners) : listeners;
+    motionValue.set(numericValue);
   }, [motionValue, listeners]);
 
   useEffect(

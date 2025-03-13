@@ -3,15 +3,15 @@ services:
     name: higher-or-lower-spotify
     env: node
     buildCommand: npm install && npm run build
-    startCommand: npm run preview
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
-      - key: VITE_MONGODB_URI
+      - key: MONGODB_URI
         sync: false
-      - key: VITE_SPOTIFY_CLIENT_ID
+      - key: SPOTIFY_CLIENT_ID
         sync: false
-      - key: VITE_SPOTIFY_CLIENT_SECRET
+      - key: SPOTIFY_CLIENT_SECRET
         sync: false
 
   - type: cron

@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: higher-or-lower-spotify
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_MONGODB_URI
+        sync: false
+      - key: VITE_SPOTIFY_CLIENT_ID
+        sync: false
+      - key: VITE_SPOTIFY_CLIENT_SECRET
+        sync: false
+
+  - type: cron
+    name: update-artists-db
+    env: node
+    buildCommand: npm install
+    startCommand: cd scraper && npx vite-node spotify.ts
+    schedule: "0 0 * * *" # Se ejecuta todos los días a medianoche
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: SPOTIFY_CLIENT_ID
+        sync: false
+      - key: SPOTIFY_CLIENT_SECRET
+        sync: false

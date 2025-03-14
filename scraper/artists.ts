@@ -46,6 +46,8 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/2Y6AtL4xQFvg8nroRM3ZV6", // odd mami
   "https://open.spotify.com/artist/2yGXs7AlyNVetlMvwsFXGk", // muerejoven
   "https://open.spotify.com/artist/48vP5SxlTO6yOI7SLKIOQV", // obie
+  "https://open.spotify.com/artist/1ZAKCwVwJeKtjVQtzm76kd", // fisher
+  "https://open.spotify.com/artist/2mddrRrlMf3ykcKyh1jlSs", // sixto
   "https://open.spotify.com/artist/51Q6RZOMEMuZHySsfWLTtk", // lil troca
   "https://open.spotify.com/artist/4EcIU574ksr6mC1GMEOe0p", // midel
   "https://open.spotify.com/artist/66lf5bQo2BIEue1pxfgxQS", // john c
@@ -127,6 +129,7 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/3FjdJbt6Myq32uv7P4owM1", // invisible
   "https://open.spotify.com/artist/7x2a9uyqlWbE9LwcoQWDTo", // almendra
   "https://open.spotify.com/artist/0G7A5LzQAs2egiQl7hO5tV", // virus
+  "https://open.spotify.com/artist/21o0KNjooi1XjygW6V70NM", // git
   "https://open.spotify.com/artist/10AzTrYMPVVmpKoBP5bX9W", // sumo
   "https://open.spotify.com/artist/5fVtUielMhdztOA34ArB6c", // ratones
   "https://open.spotify.com/artist/4TK1gDgb7QKoPFlzRrBRgR", // enanitos verdes
@@ -148,6 +151,8 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/0CBKUzrf6yGdTgxAQbUUHS", // rafaga
   "https://open.spotify.com/artist/1wkImvL5XLLhrNcmX7sVt4", // tapari
   "https://open.spotify.com/artist/2Mt2vBBEckrvXtg0JldwZ0", // un poco de ruido
+  "https://open.spotify.com/artist/6Y4g5zwJI7jcRzGLXh0H5d", // angela leiva
+  "https://open.spotify.com/artist/13t1RROs40VnX8PtMUnBqc", // quevedo eug   
   "https://open.spotify.com/artist/55ru5B05MMBunM1tvH7Di6", // valentino merlo
   "https://open.spotify.com/artist/2Htm0q72SjGSmsy8EOIhRG", // los palmeras
   "https://open.spotify.com/artist/235Vf4hkmwvxjVEMuCbRxm", // rodrigo
@@ -155,6 +160,7 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/64DFKvGarD5nmkfaIiiakf", // la mona gimenez
   "https://open.spotify.com/artist/3ghRXw2nUEH2THaL82hw8R", // konga
   "https://open.spotify.com/artist/7dlkBH23ERFXxuNoMHq94Y", // q lokura
+  "https://open.spotify.com/artist/3UdkBrbQWdMoMPI4XATTC0", // desacatado 
   "https://open.spotify.com/artist/68mkWeq03e98dvIEI0jr0N", // walter olmos
   "https://open.spotify.com/artist/13KeE3TnUrYh367HJu0sMx", // mario luis
   "https://open.spotify.com/artist/2UqRkW2wfEkZmyvKyTTv2W", // ulises bueno
@@ -169,6 +175,8 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/6S0NgDvO6FINUMYschvqZe", // agusfornite
   "https://open.spotify.com/artist/29rvPhemBdOLYdLr2xI8dr", // six sex
   "https://open.spotify.com/artist/5pg9cOudU7ezj3FnUABgu6", // nafta
+  "https://open.spotify.com/artist/3LY3yBRRL9yxCZxaxkdUir", // plan mariposas
+  "https://open.spotify.com/artist/STEdt6oH8RopaxpfWrO5Z", // cruzando el charco
   "https://open.spotify.com/artist/1cj1ov4uZ0Htsx9PWDpNvi", // el zar
   "https://open.spotify.com/artist/6ipac2Z0d0L6LWS7tTudcp", // winona riders
   "https://open.spotify.com/artist/6UZQzfJ09W8Dqmr0UoU5HL", // mujer cebra
@@ -181,6 +189,9 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/5UI7HXsBEfRSsf0T4t48Q9", // peces raros
   "https://open.spotify.com/artist/6jRUKVZllu1wtgXHbqvUmT", // kuelgue
   "https://open.spotify.com/artist/1nm9PdmvzPXJmIlMOk5XLy", // bertoldi
+  "https://open.spotify.com/artist/8gIcdW6E0jd0846aI1sVj", // gauchito club
+  "https://open.spotify.com/artist/1hE5imhaIrCEKoHLHW9aCO", // silvestre naranja
+  "https://open.spotify.com/artist/2XVoz4hoXgQ3C2BTGxl9V2", // juan ingramao
   "https://open.spotify.com/artist/4Dcz7srpGyeBFxFpQTxlvC", // dante spinetta
   "https://open.spotify.com/artist/3Pc0Gebx1aAAJlZh3zysmI", // emanuel horvath
   "https://open.spotify.com/artist/2Rc3Tb5XUPF1YlnQwuPgjg", // illya kuryaki
@@ -191,12 +202,14 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/13wFTN72PGSUxzEHJP5Ljs", // caliglaris
   "https://open.spotify.com/artist/6Q6qTNC2rAegcR5QjzcRgE", // gilda
   "https://open.spotify.com/artist/3tzacGOmngxUV8W8lU9h3Q", // delio valdez
+  "https://open.spotify.com/artist/5L6GbwWUM3Oi5GPnkmmp24", // los del fuego
   "https://open.spotify.com/artist/7s652lD4v77szrPEfgMTBi", // antonio rios
   "https://open.spotify.com/artist/3YeBTR1Q1rUxKguz4jP6UV", // damas gratis
   "https://open.spotify.com/artist/7JRxvyluWYJ3M3ssmZrVs6", // yerba brava
   "https://open.spotify.com/artist/3TINnlLcMBQA88OoalsvYR", // pibes chorros
   "https://open.spotify.com/artist/1AvkrI2S7knrbaZxydvc9B", // mala fama
   "https://open.spotify.com/artist/2zCQFd804DNH07QAI3xa25", // el pepo
+  "https://open.spotify.com/artist/2to8xMgnoxHCXPF7eWJPvg", // nestor bloque
   "https://open.spotify.com/artist/04XdCDDrPnnqidaVBTOQjt", // champions liga
   "https://open.spotify.com/artist/5VQCk9RiLwri99OgOT34kq", // villa palma
   "https://open.spotify.com/artist/25THA9HUHoxpCT4LBp7UsZ", // vicentico
@@ -240,6 +253,10 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/6ZZ2DeepA3GpoGU4KwqSlU", // luciano pereyra
   "https://open.spotify.com/artist/4IjHltwoSKbUeZLPeULyDe", // nahuel pennisi
   "https://open.spotify.com/artist/0LALueHEQunQ2d61fXGeZh", // diego torres
+  "https://open.spotify.com/artist/4kyLueNyhG8PKhJagDDOJD", // patricia sosa
+  "https://open.spotify.com/artist/60zawKIAJS16ul7OSY91wM", // valeria lynch
+  "https://open.spotify.com/artist/7E7CVSqFdLyh0K4AE9uTMo", // pimpinela
+  "https://open.spotify.com/artist/3v8mFhjLFa50QK8zDvAMYN", // amanda miguel
   "https://open.spotify.com/artist/0K59Fm1y7s3j498ueS4qzY", // soledad
   "https://open.spotify.com/artist/2ydE5oBt6cwsDxH1TpIFmO", // nocheros
   "https://open.spotify.com/artist/1GlOpg3dPUft550esb82K3", // chaquenho
@@ -251,4 +268,8 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/6J19N5JZkGRjuONpiizCIe", // sergio denis
   "https://open.spotify.com/artist/5srsgtoePlsp0eQIXmta1O", // sandro
   "https://open.spotify.com/artist/4jCduxx9HzFKS0RrRAtVXD", // palito ortega
+  "https://open.spotify.com/artist/5bRULziD2hCP3acYRcfK3E", // teenangels
+  "https://open.spotify.com/artist/7dtC84FkhalFSKToofOdOv", // floricienta
+  "https://open.spotify.com/artist/5wKQ8RnelEGULisF5rlbtm", // luz gaggia
+  "https://open.spotify.com/artist/SqghR4PmacEuzlpIOQI2k", // bandana
 ];

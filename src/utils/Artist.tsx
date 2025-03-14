@@ -8,7 +8,6 @@ export const getArtistList = async (): Promise<Array<Artist>> => {
       throw new Error("Network response was not ok");
     }
     const artists = await response.json();
-    console.log(artists);
     return artists;
   } catch (error) {
     console.error("Error fetching artists:", error);

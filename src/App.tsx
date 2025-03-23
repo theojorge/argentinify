@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import { useState, createContext, useMemo } from "react";
+import { useState, createContext, useMemo, useEffect } from "react";
 import Home from "./pages/Home";
 import Game from "./pages/Game";
 import Lost from "./pages/Lost";
 import { GameContextType, Artist } from "./utils/Types";
+import { v4 as uuidv4 } from "uuid";
 
 export const GameContext = createContext<GameContextType>({
   hasGameStarted: false,
@@ -17,8 +18,10 @@ export const GameContext = createContext<GameContextType>({
   setIsButtonVisible: () => {},
   allArtists: [],
   setAllArtists: () => {},
-  unusedArtists: [],
-  setUnusedArtists: () => {},
+  unusedArtists: [] as Artist[],
+  setUnusedArtists: (artists: Artist[]) => {},
+  userId: "",
+  setUserId: (id: string) => {},
 });
 
 const App = () => {
@@ -28,6 +31,16 @@ const App = () => {
   const [isButtonVisible, setIsButtonVisible] = useState<boolean>(true);
   const [allArtists, setAllArtists] = useState<Artist[]>([]);
   const [unusedArtists, setUnusedArtists] = useState<Artist[]>([]);
+  const [userId, setUserId] = useState(() => {
+    // Intenta obtener el userId del localStorage
+    const storedUserId = localStorage.getItem("userId");
+    return storedUserId ? storedUserId : uuidv4(); // Genera uno nuevo si no existe
+  });
+
+  useEffect(() => {
+    // Almacena el userId en localStorage
+    localStorage.setItem("userId", userId);
+  }, [userId]);
 
   const contextValue = useMemo(() => {
     return {
@@ -43,6 +56,8 @@ const App = () => {
       setAllArtists,
       unusedArtists,
       setUnusedArtists,
+      userId,
+      setUserId,
     };
   }, [
     hasGameStarted,
@@ -51,6 +66,7 @@ const App = () => {
     isButtonVisible,
     allArtists,
     unusedArtists,
+    userId,
   ]);
 
   return (

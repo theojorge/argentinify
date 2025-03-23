@@ -128,6 +128,7 @@ const Game = () => {
 
     if (score > storedHighScore) {
       window.localStorage.setItem("spotify-high-score", score.toString());
+      window.localStorage.setItem("best-score", score.toString());
       setHighScore(score);
     }
   }, [score]);

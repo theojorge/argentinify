@@ -30,4 +30,6 @@ export interface GameContextType {
   setAllArtists: (value: Artist[]) => void;
   unusedArtists: Artist[];
   setUnusedArtists: (value: Artist[]) => void;
+  userId: string;
+  setUserId: (id: string) => void;
 }

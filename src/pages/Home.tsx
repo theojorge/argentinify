@@ -29,6 +29,7 @@ const Home = () => {
   }, [setAllArtists, setUnusedArtists]);
 
   const handleStart = () => {
+    localStorage.removeItem("best-score");
     setHasGameStarted(true);
   };
 

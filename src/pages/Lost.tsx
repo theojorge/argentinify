@@ -40,16 +40,10 @@ const Lost = () => {
             </div>
           </button>
         </div>
-      </div>
 
-      {/* Leaderboard a la derecha con posicionamiento absoluto */}
-      <div className="absolute right-4 top-1/2 hidden w-full max-w-xs -translate-y-1/2 transform md:block">
-        <Leaderboard userId={userId} currentScore={score} />
-      </div>
-
-      {/* Leaderboard debajo del cartón en pantallas pequeñas */}
-      <div className="mt-6 w-full max-w-xs md:hidden">
-        <Leaderboard userId={userId} currentScore={score} />
+         <div className="mt-6 w-full max-w-xs">
+          <Leaderboard userId={userId} currentScore={score} />
+        </div>
       </div>
 
       {/* Footer con Alias MP */}

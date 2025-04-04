@@ -39,15 +39,18 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
       padding: "20px",
       maxWidth: "500px",
       margin: "0 auto",
-      backgroundColor: "#f9f9f9",
+      backgroundColor: "rgba(0, 0, 0, 0.6)",
       borderRadius: "10px",
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+      backdropFilter: "blur(8px)",
+      border: "1px solid rgba(255, 255, 255, 0.1)",
     },
     title: {
       textAlign: "center" as const,
-      color: "#333", // Color oscuro para el título
+      color: "#fff",
       fontSize: "24px",
       marginBottom: "20px",
+      fontWeight: "bold",
     },
     list: {
       listStyle: "none",
@@ -56,39 +59,54 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
     listItem: {
       display: "flex",
       justifyContent: "space-between",
-      padding: "10px",
-      marginBottom: "5px",
-      backgroundColor: "#fff",
-      borderRadius: "5px",
-      border: "1px solid #ddd",
-      color: "#333", // Color oscuro para el texto del leaderboard
+      padding: "12px",
+      marginBottom: "8px",
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      borderRadius: "8px",
+      border: "1px solid rgba(255, 255, 255, 0.05)",
+      color: "#fff",
+      transition: "all 0.2s ease",
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        transform: "translateX(5px)",
+      },
     },
     inputContainer: {
       marginTop: "20px",
       textAlign: "center" as const,
     },
     input: {
-      padding: "8px",
+      padding: "10px",
       fontSize: "16px",
-      borderRadius: "5px",
-      border: "1px solid #ccc",
+      borderRadius: "8px",
+      border: "1px solid rgba(255, 255, 255, 0.2)",
       marginRight: "10px",
       width: "200px",
-      color: "#333", // Color oscuro para el texto del input
-      backgroundColor: "#fff", // Fondo blanco para mayor contraste
+      color: "#fff",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      "&:focus": {
+        outline: "none",
+        borderColor: "rgba(255, 255, 255, 0.4)",
+      },
     },
     button: {
-      padding: "8px 16px",
+      padding: "10px 20px",
       fontSize: "16px",
-      backgroundColor: "#007bff",
-      color: "#fff", // Color blanco para el texto del botón
+      marginTop: "20px",
+      backgroundColor: "#3b82f6",
+      color: "#fff",
       border: "none",
-      borderRadius: "5px",
+      borderRadius: "8px",
       cursor: "pointer",
       opacity: username ? 1 : 0.5,
+      transition: "all 0.2s ease",
+      "&:hover": {
+        backgroundColor: "#2563eb",
+        transform: "translateY(-2px)",
+      },
     },
     message: {
-      color: "#28a745", // Verde para el mensaje
+      color: "#4ade80",
       fontWeight: "bold",
       marginBottom: "10px",
     },

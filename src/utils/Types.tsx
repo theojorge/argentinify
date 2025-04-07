@@ -13,6 +13,7 @@ export interface Artist {
   artist: string;
   listeners: string;
   image_url: string;
+  spotifyId: string;
 }
 
 export interface GuessArtist {

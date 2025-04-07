@@ -1,32 +1,14 @@
 import { BsSpotify } from "react-icons/bs";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { GameContext } from "@/App";
-import { useContext, useEffect } from "react";
-import { getArtistList } from "@/utils/Artist";
+import { useContext } from "react";
+//import { getArtistList } from "@/utils/Artist";
 
 const Home = () => {
-  const { setHasGameStarted, setAllArtists, setUnusedArtists } =
+  const { setHasGameStarted } =
     useContext(GameContext);
 
-  useEffect(() => {
-    const loadArtists = async () => {
-      try {
-        console.log("Iniciando carga de artistas...");
-        const artists = await getArtistList();
-        console.log("Artistas obtenidos:", artists?.length);
-        if (artists && artists.length > 0) {
-          // Mezclar el array de artistas
-          const shuffledArtists = [...artists].sort(() => Math.random() - 0.5);
-          console.log("Artistas mezclados:", shuffledArtists.length);
-          setAllArtists(shuffledArtists);
-          setUnusedArtists(shuffledArtists);
-        }
-      } catch (error) {
-        console.error("Error loading artists:", error);
-      }
-    };
-    loadArtists();
-  }, [setAllArtists, setUnusedArtists]);
+  
 
   const handleStart = () => {
     localStorage.removeItem("best-score");

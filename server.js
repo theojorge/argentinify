@@ -19,29 +19,32 @@ mongoose
   .catch((err) => console.error("Error de conexión a MongoDB:", err));
 
 // Schema para los artistas
-const artistSchema = new mongoose.Schema({
-  spotifyId: {
-    type: String,
-    required: true,
-    unique: true,
+const artistSchema = new mongoose.Schema(
+  {
+    spotifyId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    artist: {
+      type: String,
+      required: true,
+    },
+    listeners: {
+      type: String,
+      required: true,
+    },
+    image_url: {
+      type: String,
+      required: true,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  artist: {
-    type: String,
-    required: true,
-  },
-  listeners: {
-    type: String,
-    required: true,
-  },
-  image_url: {
-    type: String,
-    required: true,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { suppressReservedKeysWarning: true } // Añadir esta opción
+);
 
 const Artist = mongoose.model("Artist", artistSchema);
 
@@ -54,23 +57,97 @@ const leaderboardSchema = new mongoose.Schema({
 
 const Leaderboard = mongoose.model("Leaderboard", leaderboardSchema);
 
-// Ruta para obtener todos los artistas
-app.get("/api/artists", async (req, res) => {
+// Ruta para obtener un artista aleatorio
+app.post("/api/artists/random", async (req, res) => {
   try {
-    const artists = await Artist.find(
-      {},
-      {
-        _id: 0,
-        artist: 1,
-        listeners: 1,
-        image_url: 1,
-      }
-    ).lean();
-    console.log(`[API] Enviando ${artists.length} artistas`);
-    res.json(artists);
+    const { excludeIds = [], includeListeners = true } = req.body;
+
+    // Definir la proyección base (sin listeners por defecto)
+    const projection = {
+      _id: 0,
+      artist: 1,
+      image_url: 1,
+      spotifyId: 1,
+    };
+
+    // Si includeListeners es true, agregar listeners a la proyección
+    if (includeListeners) {
+      projection.listeners = 1;
+    }
+    // Obtener un artista aleatorio que no esté en excludeIds
+    const artist = await Artist.aggregate([
+      { $match: { spotifyId: { $nin: excludeIds } } },
+      { $sample: { size: 1 } },
+      { $project: { _id: 0, ...projection } }
+    ]).exec();
+
+    //console.log("[API] Resultado de artist:", JSON.stringify(artist, null, 2));
+
+    if (!artist || artist.length === 0) {
+      // Si no hay artistas disponibles, resetear y obtener cualquier artista
+      const resetArtist = await Artist.aggregate([
+        { $sample: { size: 1 } },
+        { $project: { projection } }
+      ]).exec();
+      
+      console.log("[API] Reseteando lista de artistas");
+      res.json({ ...resetArtist[0], reset: true });
+    } else {
+      console.log(`[API] Enviando artista aleatorio: ${artist[0].artist}`);
+      res.json(artist[0]);
+    }
   } catch (error) {
-    console.error("[API] Error al obtener artistas:", error);
-    res.status(500).json({ error: "Error al obtener artistas" });
+    console.error("[API] Error al obtener artista aleatorio:", error);
+    res.status(500).json({ error: "Error al obtener artista aleatorio" });
+  }
+});
+
+// Ruta para comparar listeners de un artista con un número dado
+app.post("/api/artists/compare", async (req, res) => {
+  try {
+    const { spotifyId, number, isHigher } = req.body;
+
+    // Validar que todos los parámetros estén presentes y sean del tipo correcto
+    if (!spotifyId || typeof spotifyId !== "string") {
+      return res.status(400).json({ error: "Se requiere un spotifyId válido" });
+    }
+    if (number === undefined || typeof number !== "number") {
+      return res.status(400).json({ error: "Se requiere un número válido" });
+    }
+    if (isHigher === undefined || typeof isHigher !== "boolean") {
+      return res.status(400).json({ error: "Se requiere un boolean para isHigher" });
+    }
+
+    // Buscar el artista por spotifyId
+    const artist = await Artist.findOne(
+      { spotifyId },
+      { _id: 0, artist: 1, listeners: 1 }
+    ).lean();
+
+    if (!artist) {
+      return res.status(404).json({ error: "Artista no encontrado" });
+    }
+
+    // Convertir listeners a número (ya que en el esquema es String)
+    const listeners = parseInt(artist.listeners, 10);
+
+    if (isNaN(listeners)) {
+      return res.status(500).json({ error: "Error al procesar los listeners del artista" });
+    }
+
+    // Comparar según isHigher
+    const isCorrect = isHigher ? listeners > number : listeners < number;
+
+    console.log(`[API] Comparando ${listeners} con ${number} (isHigher: ${isHigher}) - Resultado: ${isCorrect}`);
+
+    // Devolver el resultado
+    res.json({
+      listeners,
+      isCorrect,
+    });
+  } catch (error) {
+    console.error("[API] Error al comparar listeners:", error);
+    res.status(500).json({ error: "Error al comparar listeners" });
   }
 });
 

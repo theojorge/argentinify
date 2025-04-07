@@ -155,6 +155,7 @@ async function saveToDatabase(data: Artist) {
       { spotifyId: data.spotifyId },
       {
         $set: {
+          spotifyId: data.spotifyId,
           artist: data.artist,
           listeners: data.listeners,
           image_url: data.image_url,

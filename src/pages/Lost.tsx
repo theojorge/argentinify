@@ -1,5 +1,5 @@
 import { GameContext } from "@/App";
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Leaderboard from "@/components/Leaderboard";
 

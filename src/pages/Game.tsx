@@ -6,17 +6,12 @@ import RightArtist from "@/components/RightArtist";
 import { useState, useEffect, useContext } from "react";
 import { GameContext } from "@/App";
 import React from "react";
+import { getRandomArtist } from "@/utils/Artist";
+
+const MAX_USED_ARTIST_IDS = 200;
 
 const Game = () => {
-  const {
-    setHasUserLost,
-    score,
-    setScore,
-    setIsButtonVisible,
-    allArtists,
-    unusedArtists,
-    setUnusedArtists,
-  } = useContext(GameContext);
+  const { setHasUserLost, score, setScore, setIsButtonVisible } = useContext(GameContext);
 
   const [loading, setLoading] = useState(true);
   const [leftArtist, setLeftArtist] = useState<Artist>({
@@ -29,14 +24,15 @@ const Game = () => {
     listeners: "0",
     image_url: "",
   });
-  const [highScore, setHighScore] = useState<number>(
+  const [usedArtistIds, setUsedArtistIds] = useState<string[]>(() => {
+    // Cargar desde localStorage al iniciar, o usar array vacío si no hay nada
+    const storedIds = window.localStorage.getItem("usedArtistIds");
+    return storedIds ? JSON.parse(storedIds) : [];
+  });
+
+   const [highScore, setHighScore] = useState<number>(
     Number(window.localStorage.getItem("spotify-high-score")) || 0
   );
-
-  // Función para obtener un número aleatorio entre min y max (inclusive)
-  const getRandomNumber = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
 
   // Inicializar high score
   useEffect(() => {
@@ -45,81 +41,6 @@ const Game = () => {
     }
   }, []);
 
-  const getRandomArtist = () => {
-    // Si no quedan artistas sin usar, reiniciar la lista
-    if (unusedArtists.length === 0) {
-      console.log("No hay artistas disponibles, reiniciando lista...");
-      // Filtrar el artista actual de la izquierda para evitar repeticiones
-      const availableArtists = allArtists.filter(
-        (artist) =>
-          artist.artist !== rightArtist.artist &&
-          artist.artist !== leftArtist.artist
-      );
-      const randomIndex = getRandomNumber(1, availableArtists.length);
-      const artist = availableArtists[randomIndex - 1];
-
-      // Eliminar el artista de la lista de no usados y actualizar localStorage
-      const newUnusedArtists = availableArtists.filter(
-        (a) => a.artist !== artist.artist
-      );
-      setUnusedArtists(newUnusedArtists);
-      localStorage.setItem("unused-artists", JSON.stringify(newUnusedArtists));
-
-      return artist;
-    }
-
-    // Obtener un índice aleatorio entre 1 y el tamaño de la lista de disponibles
-    const randomIndex = getRandomNumber(1, unusedArtists.length);
-    const artist = unusedArtists[randomIndex - 1];
-
-    // Eliminar el artista de la lista de no usados y actualizar localStorage
-    const newUnusedArtists = unusedArtists.filter(
-      (a) => a.artist !== artist.artist
-    );
-    setUnusedArtists(newUnusedArtists);
-    localStorage.setItem("unused-artists", JSON.stringify(newUnusedArtists));
-
-    return artist;
-  };
-
-  // Inicializar artistas
-  useEffect(() => {
-    if (unusedArtists.length <= 1 && loading) {
-      console.log("No hay artistas disponibles, reiniciando lista...");
-      setUnusedArtists([...allArtists]);
-      localStorage.setItem("unused-artists", JSON.stringify([...allArtists]));
-    }
-    if (unusedArtists.length > 1 && loading) {
-      // Mezclar el array de artistas disponibles
-      const shuffledArtists = [...unusedArtists].sort(
-        () => Math.random() - 0.5
-      );
-
-      // Seleccionar el primer artista
-      const firstIndex = getRandomNumber(1, shuffledArtists.length);
-      const firstArtist = shuffledArtists[firstIndex - 1];
-
-      // Seleccionar el segundo artista (que no sea el mismo)
-      let secondIndex;
-      do {
-        secondIndex = getRandomNumber(1, shuffledArtists.length);
-      } while (secondIndex === firstIndex);
-      const secondArtist = shuffledArtists[secondIndex - 1];
-
-      // Actualizar la lista de artistas no usados
-      const newUnusedArtists = shuffledArtists.filter(
-        (artist) =>
-          artist.artist !== firstArtist.artist &&
-          artist.artist !== secondArtist.artist
-      );
-      setUnusedArtists(newUnusedArtists);
-      localStorage.setItem("unused-artists", JSON.stringify(newUnusedArtists));
-
-      setLeftArtist(firstArtist);
-      setRightArtist(secondArtist);
-      setLoading(false);
-    }
-  }, [unusedArtists, loading]);
 
   // Actualizar high score
   useEffect(() => {
@@ -127,35 +48,109 @@ const Game = () => {
       Number(window.localStorage.getItem("spotify-high-score")) || 0;
 
     if (score > storedHighScore) {
-      window.localStorage.setItem("spotify-high-score", score.toString());
       window.localStorage.setItem("best-score", score.toString());
+      window.localStorage.setItem("spotify-high-score", score.toString());
       setHighScore(score);
     }
   }, [score]);
 
-  const answer =
-    parseInt(leftArtist.listeners) < parseInt(rightArtist.listeners);
-
-  const guessAnswer = (guess: boolean) => {
-    setIsButtonVisible(false);
-
-    const win =
-      answer === guess ||
-      parseInt(leftArtist.listeners) === parseInt(rightArtist.listeners);
-
-    if (win) {
-      setScore((score) => score + 1);
-      setTimeout(() => {
-        setLeftArtist(rightArtist);
-        setRightArtist(getRandomArtist());
-        setIsButtonVisible(true);
-      }, 2000);
+  useEffect(() => {
+    if (usedArtistIds.length > MAX_USED_ARTIST_IDS) {
+     
+        window.localStorage.removeItem("usedArtistIds");
+        setUsedArtistIds([]); 
     } else {
-      // Mostrar los números por 2 segundos antes de redirigir a Lost
-      setTimeout(() => {
-        setHasUserLost(true);
-        setIsButtonVisible(true);
-      }, 2000);
+        window.localStorage.setItem("usedArtistIds", JSON.stringify(usedArtistIds));
+    }
+  }, [usedArtistIds]);
+
+
+  // Función para obtener un nuevo artista aleatorio
+  const fetchRandomArtist = async (includeListeners = false) => {
+    const artist = await getRandomArtist(usedArtistIds, includeListeners);
+    if (artist) {
+        setUsedArtistIds(prev => artist.spotifyId ? [...prev, artist.spotifyId] : prev);
+    }
+    return artist;
+};
+
+  // Inicializar artistas
+  useEffect(() => {
+    const initializeArtists = async () => {
+      const firstArtist = await fetchRandomArtist(true);
+      const secondArtist = await fetchRandomArtist(false);
+      
+      if (firstArtist && secondArtist) {
+        setLeftArtist(firstArtist);
+        setRightArtist(secondArtist);
+        setLoading(false);
+      }
+    };
+
+    initializeArtists();
+  }, []);
+
+  // Actualizar high score
+  useEffect(() => {
+    if (score > highScore) {
+      setHighScore(score);
+    }
+  }, [score]);
+
+  
+  const guessAnswer = async (guess: boolean) => {
+    
+
+    try {
+        // Llamar a la API para comparar los listeners
+        const response = await fetch("/api/artists/compare", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                spotifyId: rightArtist.spotifyId, 
+                number: parseInt(leftArtist.listeners), 
+                isHigher: guess, 
+            }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Error en la comparación");
+        }
+
+        const { listeners, isCorrect } = result;
+         
+        // Actualizar rightArtist con los listeners reales desde la API
+        // Crear una copia actualizada de rightArtist con los listeners
+        const updatedRightArtist = { ...rightArtist, listeners: listeners.toString() };
+        setIsButtonVisible(false);
+        // Actualizar el estado de rightArtist
+        setRightArtist(updatedRightArtist);
+
+        if (isCorrect) {
+            setScore((score) => score + 1);
+            const newArtist = await fetchRandomArtist();
+
+            setTimeout(() => {
+                if (newArtist) {
+                    setLeftArtist(updatedRightArtist); // Mover rightArtist a la izquierda
+                    setRightArtist(newArtist); // Nuevo artista a la derecha
+                }
+                setIsButtonVisible(true);
+            }, 2000);
+        } else {
+            setTimeout(() => {
+                setHasUserLost(true);
+                setIsButtonVisible(true);
+            }, 2000);
+        }
+    } catch (error) {
+        console.error("Error al procesar la respuesta:", error);
+        setTimeout(() => {
+            setHasUserLost(true); // Si falla la API, considera que perdió por seguridad
+            setIsButtonVisible(true);
+        }, 2000);
     }
   };
 

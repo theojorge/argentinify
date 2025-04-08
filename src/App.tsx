@@ -16,10 +16,10 @@ export const GameContext = createContext<GameContextType>({
   setScore: () => {},
   isButtonVisible: true,
   setIsButtonVisible: () => {},
-  allArtists: [],
-  setAllArtists: () => {},
-  unusedArtists: [] as Artist[],
-  setUnusedArtists: (artists: Artist[]) => {},
+  InitialRightArtist: null,
+  setInitialRightArtist: () => {},
+  InitialLeftArtist: null,
+  setInitialLeftArtist: () => {},
   userId: "",
   setUserId: (id: string) => {},
 });
@@ -29,8 +29,8 @@ const App = () => {
   const [hasUserLost, setHasUserLost] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [isButtonVisible, setIsButtonVisible] = useState<boolean>(true);
-  const [allArtists, setAllArtists] = useState<Artist[]>([]);
-  const [unusedArtists, setUnusedArtists] = useState<Artist[]>([]);
+  const [InitialRightArtist, setInitialRightArtist] = useState<Artist | null>(null);
+  const [InitialLeftArtist, setInitialLeftArtist] = useState<Artist | null>(null);
   const [userId, setUserId] = useState(() => {
     // Intenta obtener el userId del localStorage
     const storedUserId = localStorage.getItem("userId");
@@ -52,10 +52,10 @@ const App = () => {
       setScore,
       isButtonVisible,
       setIsButtonVisible,
-      allArtists,
-      setAllArtists,
-      unusedArtists,
-      setUnusedArtists,
+      InitialRightArtist,
+      setInitialRightArtist,
+      InitialLeftArtist,
+      setInitialLeftArtist,
       userId,
       setUserId,
     };
@@ -64,8 +64,8 @@ const App = () => {
     hasUserLost,
     score,
     isButtonVisible,
-    allArtists,
-    unusedArtists,
+    InitialRightArtist,
+    InitialLeftArtist,
     userId,
   ]);
 

@@ -7,12 +7,13 @@ import { useState, useEffect, useContext } from "react";
 import { GameContext } from "@/App";
 import React from "react";
 import { getRandomArtist } from "@/utils/Artist";
+import { useInitialArtists } from "@/hooks/useInitialArtists";
 
-const MAX_USED_ARTIST_IDS = 200;
+
 
 const Game = () => {
-  const { setHasUserLost, score, setScore, setIsButtonVisible } = useContext(GameContext);
-
+  const { setHasUserLost, score, setScore, setIsButtonVisible, InitialRightArtist, InitialLeftArtist } = useContext(GameContext);
+  const { fetchRandomArtist } = useInitialArtists();
   const [loading, setLoading] = useState(true);
   const [leftArtist, setLeftArtist] = useState<Artist>({
     artist: "Loading...",
@@ -24,15 +25,21 @@ const Game = () => {
     listeners: "0",
     image_url: "",
   });
-  const [usedArtistIds, setUsedArtistIds] = useState<string[]>(() => {
-    // Cargar desde localStorage al iniciar, o usar array vacío si no hay nada
-    const storedIds = window.localStorage.getItem("usedArtistIds");
-    return storedIds ? JSON.parse(storedIds) : [];
-  });
 
    const [highScore, setHighScore] = useState<number>(
     Number(window.localStorage.getItem("spotify-high-score")) || 0
   );
+
+  useEffect(() => {
+    if (InitialLeftArtist && InitialRightArtist) {
+      setLeftArtist(InitialLeftArtist);
+      setRightArtist(InitialRightArtist);
+      setLoading(false);
+    } else {
+      // En caso de que no estén cargados, podrías redirigir a Home o mostrar error
+      console.warn("Artistas iniciales no disponibles");
+    }
+  }, [InitialLeftArtist, InitialRightArtist]);
 
   // Inicializar high score
   useEffect(() => {
@@ -54,41 +61,7 @@ const Game = () => {
     }
   }, [score]);
 
-  useEffect(() => {
-    if (usedArtistIds.length > MAX_USED_ARTIST_IDS) {
-     
-        window.localStorage.removeItem("usedArtistIds");
-        setUsedArtistIds([]); 
-    } else {
-        window.localStorage.setItem("usedArtistIds", JSON.stringify(usedArtistIds));
-    }
-  }, [usedArtistIds]);
-
-
-  // Función para obtener un nuevo artista aleatorio
-  const fetchRandomArtist = async (includeListeners = false) => {
-    const artist = await getRandomArtist(usedArtistIds, includeListeners);
-    if (artist) {
-        setUsedArtistIds(prev => artist.spotifyId ? [...prev, artist.spotifyId] : prev);
-    }
-    return artist;
-};
-
-  // Inicializar artistas
-  useEffect(() => {
-    const initializeArtists = async () => {
-      const firstArtist = await fetchRandomArtist(true);
-      const secondArtist = await fetchRandomArtist(false);
-      
-      if (firstArtist && secondArtist) {
-        setLeftArtist(firstArtist);
-        setRightArtist(secondArtist);
-        setLoading(false);
-      }
-    };
-
-    initializeArtists();
-  }, []);
+ 
 
   // Actualizar high score
   useEffect(() => {

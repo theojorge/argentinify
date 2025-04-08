@@ -26,10 +26,10 @@ export interface GameContextType {
   setScore: (value: React.SetStateAction<number>) => void;
   isButtonVisible: boolean;
   setIsButtonVisible: (value: boolean) => void;
-  allArtists: Artist[];
-  setAllArtists: (value: Artist[]) => void;
-  unusedArtists: Artist[];
-  setUnusedArtists: (value: Artist[]) => void;
+  InitialRightArtist: Artist | null;
+  setInitialRightArtist: (artist: Artist | null) => void;
+  InitialLeftArtist: Artist | null;
+  setInitialLeftArtist: (artist: Artist | null) => void;
   userId: string;
   setUserId: (id: string) => void;
 }

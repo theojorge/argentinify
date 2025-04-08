@@ -1,16 +1,19 @@
 import { BsSpotify } from "react-icons/bs";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { GameContext } from "@/App";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useInitialArtists } from "@/hooks/useInitialArtists";
 //import { getArtistList } from "@/utils/Artist";
 
 const Home = () => {
-  const { setHasGameStarted } =
-    useContext(GameContext);
+  const { setHasGameStarted, } = useContext(GameContext);
+  const { initializeArtists } = useInitialArtists();
 
-  
+  useEffect(() => {
+    initializeArtists();
+  }, []);
 
-  const handleStart = () => {
+  const handleStart = async () => {
     localStorage.removeItem("best-score");
     setHasGameStarted(true);
   };

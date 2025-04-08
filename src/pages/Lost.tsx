@@ -1,13 +1,19 @@
 import { GameContext } from "@/App";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import Leaderboard from "@/components/Leaderboard";
+import { useInitialArtists } from "@/hooks/useInitialArtists";
 
 const Lost = () => {
   const { setHasUserLost, setHasGameStarted, score, setScore, userId } =
     useContext(GameContext);
+  const { initializeArtists } = useInitialArtists();
 
-  const resetGame = () => {
+   useEffect(() => {
+    initializeArtists();
+  }, []);
+
+  const resetGame = async () => {
     setScore(0);
     setHasUserLost(false);
     setHasGameStarted(true);

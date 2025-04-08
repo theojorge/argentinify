@@ -7,13 +7,19 @@ export interface GameContextType {
   setScore: React.Dispatch<React.SetStateAction<number>>;
   isButtonVisible: boolean;
   setIsButtonVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  InitialRightArtist: Artist | null;
+  setInitialRightArtist: React.Dispatch<React.SetStateAction<Artist | null>>;
+  InitialLeftArtist: Artist | null;
+  setInitialLeftArtist: React.Dispatch<React.SetStateAction<Artist | null>>;
+  userId: string;
+  setUserId: (id: string) => void;
 }
 
 export interface Artist {
   artist: string;
   listeners: string;
   image_url: string;
-  spotifyId: string;
+  spotifyId?: string;
 }
 
 export interface GuessArtist {

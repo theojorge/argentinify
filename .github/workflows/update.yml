@@ -1,0 +1,45 @@
+name: Spotify Data Scraper
+
+on:
+  schedule:
+    - cron: '0 0 */5 * *' # Runs every 5 days at midnight UTC
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  scrape-spotify:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Adjust if your project uses a different version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          npm install
+          cd scraper
+          npm install
+
+      # Install Puppeteer dependencies
+      - name: Install Puppeteer browser
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          sudo apt-get install -y libx11-xcb1 libxcomposite1 libxdamage1 libxi6 libxtst6 libnss3 libxss1 libxrandr2 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libgbm1 libpango-1.0-0 libcairo2 libatspi2.0-0
+
+      # Run the Spotify scraper
+      - name: Run Spotify scraper
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          cd scraper
+          npx vite-node spotify.ts

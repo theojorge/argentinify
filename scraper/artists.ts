@@ -55,7 +55,7 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/38PVRkX8RixC7XuDRltJpN", // linyeras
   "https://open.spotify.com/artist/5aJWEc5r4loyrMRAXgPxsh", // ronpe
   "https://open.spotify.com/artist/4MOX8I8Ot0wUu4Sochsxrt", // oney
-  "https://open.spotify.com/artist/5KpmLKI7ktzNzQL13J95Pf", // cero
+  "https://open.spotify.com/artist/5KpmLKI7ktzNzQL13J95Pf", // cerounno
   "https://open.spotify.com/artist/6Gsh7oJoJ5EQUuQk0EhfWL", // malandro
   "https://open.spotify.com/artist/0wTR1DXxJ3Ok60O4K4U9WT", // mir nicolas
   "https://open.spotify.com/artist/5p3CzYVyNJ3qvuS6aXxo9R", // kamada
@@ -173,10 +173,16 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/3ZZY9rHZxm8lmug0aoX3pB", // turrobaby
   "https://open.spotify.com/artist/1p9IEVolgFCEjlFwEGTjPG", // el doctor
   "https://open.spotify.com/artist/6S0NgDvO6FINUMYschvqZe", // agusfornite
+  "https://open.spotify.com/artist/2YW2jsqJMVaxPgeETV2Ttl", // cero
+  "https://open.spotify.com/artist/51f3tNDq1t3W7OCtokDRb0", // little boogie
+  "https://open.spotify.com/artist/6pCBRiHhyUMQBqs0WUSxEL", // frozouda
+  "https://open.spotify.com/artist/77T5XlEwCRjlmRIioW5OXB", // cluster
+  "https://open.spotify.com/artist/0MSw8gYA4pujLZst10Zve8", // juicynise
+  "https://open.spotify.com/artist/6Mo5LUenVqXbaxeWw91lAH", // dolly flacko
   "https://open.spotify.com/artist/29rvPhemBdOLYdLr2xI8dr", // six sex
   "https://open.spotify.com/artist/5pg9cOudU7ezj3FnUABgu6", // nafta
   "https://open.spotify.com/artist/3LY3yBRRL9yxCZxaxkdUir", // plan mariposas
-  "https://open.spotify.com/artist/STEdt6oH8RopaxpfWrO5Z", // cruzando el charco
+  "https://open.spotify.com/artist/4STEdt6oH8RopaxpfWrO5Z", // cruzando el charco
   "https://open.spotify.com/artist/1cj1ov4uZ0Htsx9PWDpNvi", // el zar
   "https://open.spotify.com/artist/6ipac2Z0d0L6LWS7tTudcp", // winona riders
   "https://open.spotify.com/artist/6UZQzfJ09W8Dqmr0UoU5HL", // mujer cebra
@@ -189,7 +195,7 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/5UI7HXsBEfRSsf0T4t48Q9", // peces raros
   "https://open.spotify.com/artist/6jRUKVZllu1wtgXHbqvUmT", // kuelgue
   "https://open.spotify.com/artist/1nm9PdmvzPXJmIlMOk5XLy", // bertoldi
-  "https://open.spotify.com/artist/8gIcdW6E0jd0846aI1sVj", // gauchito club
+  "https://open.spotify.com/artist/58gIcdW6E0jd0846aI1sVj", // gauchito club
   "https://open.spotify.com/artist/1hE5imhaIrCEKoHLHW9aCO", // silvestre naranja
   "https://open.spotify.com/artist/2XVoz4hoXgQ3C2BTGxl9V2", // juan ingramao
   "https://open.spotify.com/artist/4Dcz7srpGyeBFxFpQTxlvC", // dante spinetta
@@ -271,5 +277,6 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/5bRULziD2hCP3acYRcfK3E", // teenangels
   "https://open.spotify.com/artist/7dtC84FkhalFSKToofOdOv", // floricienta
   "https://open.spotify.com/artist/5wKQ8RnelEGULisF5rlbtm", // luz gaggia
-  "https://open.spotify.com/artist/SqghR4PmacEuzlpIOQI2k", // bandana
+  "https://open.spotify.com/artist/5SqghR4PmacEuzlpIOQI2k", // bandana
+  
 ];

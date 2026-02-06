@@ -47,9 +47,7 @@ const Home = () => {
           className="m-5 w-full max-w-[10rem] transform cursor-pointer rounded-full bg-[#002776] py-2 text-lg font-bold text-white transition duration-200 hover:scale-105 hover:bg-[#001B4D]"
           onClick={handleStart}
         >
-          <div className="flex items-center justify-center">
-            Empezar &nbsp;
-          </div>
+          <div className="flex items-center justify-center">Empezar &nbsp;</div>
         </button>
       </div>
     </div>

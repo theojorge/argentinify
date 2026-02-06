@@ -1,6 +1,5 @@
 import { GameContext } from "@/App";
 import { useContext, useEffect } from "react";
-import { AiOutlineArrowRight } from "react-icons/ai";
 import Leaderboard from "@/components/Leaderboard";
 import { useInitialArtists } from "@/hooks/useInitialArtists";
 

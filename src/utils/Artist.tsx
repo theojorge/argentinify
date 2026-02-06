@@ -17,7 +17,7 @@ export const getArtistList = async (): Promise<Array<Artist>> => {
 
 export const getRandomArtist = async (
   excludeIds: string[] = [],
-  includeListeners: boolean = false
+  includeListeners = false
 ): Promise<Artist | null> => {
   try {
     const response = await fetch("/api/artists/random", {

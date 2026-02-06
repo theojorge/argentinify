@@ -10,7 +10,7 @@ const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI || process.env.VITE_MONGODB_URI;
     if (!mongoUri) {
-        throw new Error("MONGODB_URI no está definida");
+      throw new Error("MONGODB_URI no está definida");
     }
     const conn = await mongoose.connect(mongoUri);
     console.log(`MongoDB conectada: ${conn.connection.host}`);
@@ -123,8 +123,8 @@ async function main() {
     await getSpotifyToken();
 
     browser = await launch({
-        headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
 

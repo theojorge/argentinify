@@ -22,7 +22,8 @@ app.use(express.json({ limit: "10kb" }));
 const apiLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutos
   max: 1000, // máximo 1000 requests por IP
-  message: "Demasiadas solicitudes desde esta IP, intenta nuevamente en 5 minutos",
+  message:
+    "Demasiadas solicitudes desde esta IP, intenta nuevamente en 5 minutos",
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -105,7 +106,11 @@ const artistRecommendationSchema = new mongoose.Schema({
   username: { type: String, required: true },
   artistName: { type: String, required: true },
   recommendedAt: { type: Date, default: Date.now },
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' }
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  },
 });
 
 // Índices para mejor performance
@@ -113,7 +118,10 @@ artistRecommendationSchema.index({ userId: 1 }, { unique: true });
 artistRecommendationSchema.index({ status: 1 });
 artistRecommendationSchema.index({ recommendedAt: -1 });
 
-const ArtistRecommendation = mongoose.model("ArtistRecommendation", artistRecommendationSchema);
+const ArtistRecommendation = mongoose.model(
+  "ArtistRecommendation",
+  artistRecommendationSchema
+);
 
 // Ruta para obtener un artista aleatorio (OPTIMIZADA)
 app.post("/api/artists/random", async (req, res) => {
@@ -147,7 +155,7 @@ app.post("/api/artists/random", async (req, res) => {
       return res.json({ ...artist, reset: true });
     }
 
-    // Obtener artista aleatorio usando skip 
+    // Obtener artista aleatorio usando skip
     const randomSkip = Math.floor(Math.random() * count);
     const artist = await Artist.findOne({
       spotifyId: { $nin: excludeIds },
@@ -164,7 +172,7 @@ app.post("/api/artists/random", async (req, res) => {
   }
 });
 
-// Ruta para obtener listeners de un artista 
+// Ruta para obtener listeners de un artista
 app.post("/api/artists/listeners", async (req, res) => {
   try {
     const { spotifyId } = req.body;
@@ -193,9 +201,11 @@ app.post("/api/artists/listeners", async (req, res) => {
         .json({ error: "Error al procesar los listeners del artista" });
     }
 
-    console.log(`[API] Enviando listeners para spotifyId: ${spotifyId} - ${listeners}`);
+    console.log(
+      `[API] Enviando listeners para spotifyId: ${spotifyId} - ${listeners}`
+    );
 
-    // Devolver solo los listeners 
+    // Devolver solo los listeners
     res.json({
       listeners,
     });
@@ -217,7 +227,10 @@ app.get("/api/leaderboard", async (req, res) => {
     }
 
     // Si no hay caché válido, consultar la base de datos
-    const scores = await Leaderboard.find().sort({ score: -1 }).limit(10).lean();
+    const scores = await Leaderboard.find()
+      .sort({ score: -1 })
+      .limit(10)
+      .lean();
     const formattedScores = scores.map((doc) => ({
       userId: doc.userId.toString(),
       username: doc.username,
@@ -226,43 +239,47 @@ app.get("/api/leaderboard", async (req, res) => {
 
     // Obtener todos los scores para calcular posiciones
     const allScores = await Leaderboard.find().sort({ score: -1 }).lean();
-    
+
     // Si se proporciona userId, calcular su posición y estado de recomendación
     const { userId } = req.query;
     let userInfo = null;
-    
+
     if (userId) {
-      const userIndex = allScores.findIndex(score => score.userId.toString() === userId);
-      
+      const userIndex = allScores.findIndex(
+        (score) => score.userId.toString() === userId
+      );
+
       if (userIndex !== -1) {
         const userPosition = userIndex + 1;
         const userScore = allScores[userIndex];
         const isInTop10 = userPosition <= 10;
-        
+
         // Verificar si puede recomendar
         let canRecommend = false;
         if (isInTop10) {
-          const existingRecommendation = await ArtistRecommendation.findOne({ userId: userId });
+          const existingRecommendation = await ArtistRecommendation.findOne({
+            userId: userId,
+          });
           canRecommend = !existingRecommendation;
         }
-        
+
         userInfo = {
           position: userPosition,
           totalPlayers: allScores.length,
           score: userScore.score,
           username: userScore.username,
           isInTop10: isInTop10,
-          canRecommend: canRecommend
+          canRecommend: canRecommend,
         };
       }
     }
 
     const responseData = {
       leaderboard: formattedScores,
-      userInfo: userInfo
+      userInfo: userInfo,
     };
 
-    // Guardar en caché 
+    // Guardar en caché
     cache.leaderboard = { leaderboard: formattedScores };
     cache.leaderboardExpiry = now + CACHE_TTL;
 
@@ -276,7 +293,7 @@ app.get("/api/leaderboard", async (req, res) => {
   }
 });
 
-// Ruta para actualizar o crear un puntaje en el leaderboard 
+// Ruta para actualizar o crear un puntaje en el leaderboard
 app.post("/api/leaderboard", async (req, res) => {
   const { userId, username, score } = req.body;
 
@@ -293,10 +310,12 @@ app.post("/api/leaderboard", async (req, res) => {
       // Si el nuevo score es mayor, actualizar el registro existente
       if (score > existingScore.score) {
         await Leaderboard.updateOne(
-          { userId: userId }, 
+          { userId: userId },
           { score: score, username: username }
         );
-        console.log(`[API] Puntaje actualizado para userId: ${userId} (${existingScore.score} -> ${score})`);
+        console.log(
+          `[API] Puntaje actualizado para userId: ${userId} (${existingScore.score} -> ${score})`
+        );
       } else {
         console.log(
           `[API] Puntaje no supera el existente para userId: ${userId} (${score} <= ${existingScore.score})`
@@ -305,7 +324,9 @@ app.post("/api/leaderboard", async (req, res) => {
     } else {
       // Si no existe, crear un nuevo registro
       await Leaderboard.create({ userId: userId, username, score });
-      console.log(`[API] Nueva entrada creada para userId: ${userId} con score: ${score}`);
+      console.log(
+        `[API] Nueva entrada creada para userId: ${userId} con score: ${score}`
+      );
     }
 
     // Invalidar caché del leaderboard
@@ -313,7 +334,10 @@ app.post("/api/leaderboard", async (req, res) => {
     cache.leaderboardExpiry = 0;
 
     // Obtener el leaderboard actualizado
-    const updatedScores = await Leaderboard.find().sort({ score: -1 }).limit(10).lean();
+    const updatedScores = await Leaderboard.find()
+      .sort({ score: -1 })
+      .limit(10)
+      .lean();
     const formattedScores = updatedScores.map((doc) => ({
       userId: doc.userId.toString(),
       username: doc.username,
@@ -326,34 +350,38 @@ app.post("/api/leaderboard", async (req, res) => {
 
     // Calcular información del usuario actualizado
     const allScores = await Leaderboard.find().sort({ score: -1 }).lean();
-    const userIndex = allScores.findIndex(score => score.userId.toString() === userId);
-    
+    const userIndex = allScores.findIndex(
+      (score) => score.userId.toString() === userId
+    );
+
     let userInfo = null;
     if (userIndex !== -1) {
       const userPosition = userIndex + 1;
       const userScore = allScores[userIndex];
       const isInTop10 = userPosition <= 10;
-      
+
       // Verificar si puede recomendar
       let canRecommend = false;
       if (isInTop10) {
-        const existingRecommendation = await ArtistRecommendation.findOne({ userId: userId });
+        const existingRecommendation = await ArtistRecommendation.findOne({
+          userId: userId,
+        });
         canRecommend = !existingRecommendation;
       }
-      
+
       userInfo = {
         position: userPosition,
         totalPlayers: allScores.length,
         score: userScore.score,
         username: userScore.username,
         isInTop10: isInTop10,
-        canRecommend: canRecommend
+        canRecommend: canRecommend,
       };
     }
 
     const responseData = {
       leaderboard: formattedScores,
-      userInfo: userInfo
+      userInfo: userInfo,
     };
 
     console.log(
@@ -376,50 +404,64 @@ app.post("/api/recommendations", async (req, res) => {
 
   try {
     // Verificar si el usuario ya ha recomendado antes
-    const existingRecommendation = await ArtistRecommendation.findOne({ userId: userId });
+    const existingRecommendation = await ArtistRecommendation.findOne({
+      userId: userId,
+    });
     if (existingRecommendation) {
-      return res.status(403).json({ error: "Ya has enviado una recomendación anteriormente" });
+      return res
+        .status(403)
+        .json({ error: "Ya has enviado una recomendación anteriormente" });
     }
 
-    // Verificar si el usuario está en el top 10 
-    const topScores = await Leaderboard.find().sort({ score: -1 }).limit(10).lean();
-    const isInTop10 = topScores.some(score => score.userId.toString() === userId);
-    
+    // Verificar si el usuario está en el top 10
+    const topScores = await Leaderboard.find()
+      .sort({ score: -1 })
+      .limit(10)
+      .lean();
+    const isInTop10 = topScores.some(
+      (score) => score.userId.toString() === userId
+    );
+
     if (!isInTop10) {
-      return res.status(403).json({ error: "Debes estar en el top 10 para recomendar artistas" });
+      return res
+        .status(403)
+        .json({ error: "Debes estar en el top 10 para recomendar artistas" });
     }
 
-    // Limpiar el nombre del artista 
-    const cleanArtistName = artistName.replace(/^["']|["']$/g, '').trim();
+    // Limpiar el nombre del artista
+    const cleanArtistName = artistName.replace(/^["']|["']$/g, "").trim();
 
     // Crear la recomendación
     const recommendation = await ArtistRecommendation.create({
       userId,
       username,
-      artistName: cleanArtistName
+      artistName: cleanArtistName,
     });
 
-    console.log(`[API] Recomendación creada: ${username} recomendó ${cleanArtistName}`);
-    
+    console.log(
+      `[API] Recomendación creada: ${username} recomendó ${cleanArtistName}`
+    );
+
     res.status(201).json({
       message: "Recomendación guardada exitosamente",
       recommendation: {
         artistName: cleanArtistName,
         status: recommendation.status,
-        recommendedAt: recommendation.recommendedAt
-      }
+        recommendedAt: recommendation.recommendedAt,
+      },
     });
   } catch (error) {
     // Manejar error de duplicado
     if (error.code === 11000) {
-      return res.status(403).json({ error: "Ya has enviado una recomendación anteriormente" });
+      return res
+        .status(403)
+        .json({ error: "Ya has enviado una recomendación anteriormente" });
     }
-    
+
     console.error("[API] Error al guardar recomendación:", error);
     res.status(500).json({ error: "Error al guardar la recomendación" });
   }
 });
-
 
 // Servir archivos estáticos de React
 app.use(express.static(path.join(__dirname, "dist")));

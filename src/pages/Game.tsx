@@ -71,7 +71,7 @@ const Game = () => {
     }
   }, [score]);
 
-   const guessAnswer = async (guess: boolean) => {
+  const guessAnswer = async (guess: boolean) => {
     try {
       // Obtener los listeners del artista de la derecha
       const response = await fetch("/api/artists/listeners", {
@@ -94,21 +94,20 @@ const Game = () => {
         listeners: listeners.toString(),
       };
 
-      const rightListeners = listeners; 
+      setRightArtist(updatedRightArtist);
+      setIsButtonVisible(false);
+
+      const rightListeners = listeners;
       const leftListeners = parseInt(leftArtist.listeners);
 
-      // Comparación 
+      // Comparación
       const isCorrect = guess
         ? rightListeners > leftListeners
         : rightListeners < leftListeners;
 
-      
-      setRightArtist(updatedRightArtist);
-      setIsButtonVisible(false);
-
       if (isCorrect) {
         setScore((score) => score + 1);
-        
+
         // Obtener el siguiente artista
         const newArtist = await fetchRandomArtist();
 
@@ -137,7 +136,9 @@ const Game = () => {
   if (loading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-gray-800 text-white">
-        <div className="text-2xl">Artistas llegando, no hubo presupuesto para un telonero...</div>
+        <div className="text-2xl">
+          Artistas llegando, no hubo presupuesto para un telonero...
+        </div>
       </div>
     );
   }

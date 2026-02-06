@@ -11,7 +11,10 @@ app.use(cors());
 app.use(express.json());
 
 // Conexión a MongoDB
-const mongoUri = process.env.MONGODB_URI || process.env.VITE_MONGODB_URI || "mongodb://localhost:27017/spotify_artists";
+const mongoUri =
+  process.env.MONGODB_URI ||
+  process.env.VITE_MONGODB_URI ||
+  "mongodb://localhost:27017/spotify_artists";
 
 mongoose
   .connect(mongoUri)
@@ -78,7 +81,7 @@ app.post("/api/artists/random", async (req, res) => {
     const artist = await Artist.aggregate([
       { $match: { spotifyId: { $nin: excludeIds } } },
       { $sample: { size: 1 } },
-      { $project: { _id: 0, ...projection } }
+      { $project: { _id: 0, ...projection } },
     ]).exec();
 
     //console.log("[API] Resultado de artist:", JSON.stringify(artist, null, 2));
@@ -87,9 +90,9 @@ app.post("/api/artists/random", async (req, res) => {
       // Si no hay artistas disponibles, resetear y obtener cualquier artista
       const resetArtist = await Artist.aggregate([
         { $sample: { size: 1 } },
-        { $project: { projection } }
+        { $project: { projection } },
       ]).exec();
-      
+
       console.log("[API] Reseteando lista de artistas");
       res.json({ ...resetArtist[0], reset: true });
     } else {
@@ -115,7 +118,9 @@ app.post("/api/artists/compare", async (req, res) => {
       return res.status(400).json({ error: "Se requiere un número válido" });
     }
     if (isHigher === undefined || typeof isHigher !== "boolean") {
-      return res.status(400).json({ error: "Se requiere un boolean para isHigher" });
+      return res
+        .status(400)
+        .json({ error: "Se requiere un boolean para isHigher" });
     }
 
     // Buscar el artista por spotifyId
@@ -132,13 +137,17 @@ app.post("/api/artists/compare", async (req, res) => {
     const listeners = parseInt(artist.listeners, 10);
 
     if (isNaN(listeners)) {
-      return res.status(500).json({ error: "Error al procesar los listeners del artista" });
+      return res
+        .status(500)
+        .json({ error: "Error al procesar los listeners del artista" });
     }
 
     // Comparar según isHigher
     const isCorrect = isHigher ? listeners > number : listeners < number;
 
-    console.log(`[API] Comparando ${listeners} con ${number} (isHigher: ${isHigher}) - Resultado: ${isCorrect}`);
+    console.log(
+      `[API] Comparando ${listeners} con ${number} (isHigher: ${isHigher}) - Resultado: ${isCorrect}`
+    );
 
     // Devolver el resultado
     res.json({
@@ -160,7 +169,9 @@ app.get("/api/leaderboard", async (req, res) => {
       username: doc.username,
       score: doc.score,
     }));
-    console.log(`[API] Enviando ${formattedScores.length} puntajes del leaderboard`);
+    console.log(
+      `[API] Enviando ${formattedScores.length} puntajes del leaderboard`
+    );
     res.json(formattedScores);
   } catch (error) {
     console.error("[API] Error al obtener leaderboard:", error);
@@ -182,13 +193,12 @@ app.post("/api/leaderboard", async (req, res) => {
 
     if (existingScore) {
       if (score > existingScore.score) {
-        await Leaderboard.updateOne(
-          { userId: userId },
-          { score, username }
-        );
+        await Leaderboard.updateOne({ userId: userId }, { score, username });
         console.log(`[API] Puntaje actualizado para userId: ${userId}`);
       } else {
-        console.log(`[API] Puntaje no supera el existente para userId: ${userId}`);
+        console.log(
+          `[API] Puntaje no supera el existente para userId: ${userId}`
+        );
       }
     } else {
       await Leaderboard.create({ userId: userId, username, score });
@@ -201,7 +211,9 @@ app.post("/api/leaderboard", async (req, res) => {
       username: doc.username,
       score: doc.score,
     }));
-    console.log(`[API] Enviando ${formattedScores.length} puntajes actualizados`);
+    console.log(
+      `[API] Enviando ${formattedScores.length} puntajes actualizados`
+    );
     res.json(formattedScores);
   } catch (error) {
     console.error("[API] Error al actualizar leaderboard:", error);

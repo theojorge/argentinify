@@ -5,7 +5,8 @@ import { GameContext } from "@/App";
 const MAX_USED_ARTIST_IDS = 200;
 
 export const useInitialArtists = () => {
-  const { setInitialLeftArtist, setInitialRightArtist } = useContext(GameContext);
+  const { setInitialLeftArtist, setInitialRightArtist } =
+    useContext(GameContext);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [usedArtistIds, setUsedArtistIds] = useState<string[]>(() => {
@@ -13,20 +14,24 @@ export const useInitialArtists = () => {
     return storedIds ? JSON.parse(storedIds) : [];
   });
 
-   useEffect(() => {
+  useEffect(() => {
     if (usedArtistIds.length > MAX_USED_ARTIST_IDS) {
-     
-        window.localStorage.removeItem("usedArtistIds");
-        setUsedArtistIds([]); 
+      window.localStorage.removeItem("usedArtistIds");
+      setUsedArtistIds([]);
     } else {
-        window.localStorage.setItem("usedArtistIds", JSON.stringify(usedArtistIds));
+      window.localStorage.setItem(
+        "usedArtistIds",
+        JSON.stringify(usedArtistIds)
+      );
     }
   }, [usedArtistIds]);
 
   const fetchRandomArtist = async (includeListeners = false) => {
     const artist = await getRandomArtist(usedArtistIds, includeListeners);
     if (artist && artist.spotifyId) {
-      setUsedArtistIds(prev => artist.spotifyId ? [...prev, artist.spotifyId] : prev);
+      setUsedArtistIds((prev) =>
+        artist.spotifyId ? [...prev, artist.spotifyId] : prev
+      );
     }
     return artist;
   };
@@ -35,7 +40,7 @@ export const useInitialArtists = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const left = await fetchRandomArtist(true);
       const right = await fetchRandomArtist(false);
 
@@ -53,7 +58,5 @@ export const useInitialArtists = () => {
     }
   };
 
-
-
   return { isLoading, error, initializeArtists, fetchRandomArtist };
-}; 
+};

@@ -10,7 +10,8 @@ export function Listeners(props: Listeners) {
   const springValue = useSpring(motionValue, { duration: 750 });
 
   useEffect(() => {
-    const numericValue = typeof listeners === 'string' ? parseInt(listeners) : listeners;
+    const numericValue =
+      typeof listeners === "string" ? parseInt(listeners) : listeners;
     motionValue.set(numericValue);
   }, [motionValue, listeners]);
 

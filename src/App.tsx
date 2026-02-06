@@ -29,8 +29,12 @@ const App = () => {
   const [hasUserLost, setHasUserLost] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [isButtonVisible, setIsButtonVisible] = useState<boolean>(true);
-  const [InitialRightArtist, setInitialRightArtist] = useState<Artist | null>(null);
-  const [InitialLeftArtist, setInitialLeftArtist] = useState<Artist | null>(null);
+  const [InitialRightArtist, setInitialRightArtist] = useState<Artist | null>(
+    null
+  );
+  const [InitialLeftArtist, setInitialLeftArtist] = useState<Artist | null>(
+    null
+  );
   const [userId, setUserId] = useState(() => {
     // Intenta obtener el userId del localStorage
     const storedUserId = localStorage.getItem("userId");

@@ -6,7 +6,7 @@ import { useInitialArtists } from "@/hooks/useInitialArtists";
 //import { getArtistList } from "@/utils/Artist";
 
 const Home = () => {
-  const { setHasGameStarted, } = useContext(GameContext);
+  const { setHasGameStarted } = useContext(GameContext);
   const { initializeArtists } = useInitialArtists();
 
   useEffect(() => {
@@ -33,8 +33,8 @@ const Home = () => {
           Que artista tiene más oyentes en Spotify?
         </h1>
         <p className="text-xl text-[#002776]">
-          Un juego simple de más o menos basado en los oyentes de Spotify con más de 250
-          artistas argentinos.
+          Un juego simple de más o menos basado en los oyentes de Spotify con
+          más de 250 artistas argentinos.
         </p>
         <p className="text-xl text-[#002776]">
           Todos los datos son actualizados cada semana.
@@ -45,7 +45,7 @@ const Home = () => {
           onClick={handleStart}
         >
           <div className="flex items-center justify-center">
-            Empezar &nbsp; <AiOutlineArrowRight />
+            Empezar &nbsp;
           </div>
         </button>
       </div>

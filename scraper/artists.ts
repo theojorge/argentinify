@@ -152,7 +152,7 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/1wkImvL5XLLhrNcmX7sVt4", // tapari
   "https://open.spotify.com/artist/2Mt2vBBEckrvXtg0JldwZ0", // un poco de ruido
   "https://open.spotify.com/artist/6Y4g5zwJI7jcRzGLXh0H5d", // angela leiva
-  "https://open.spotify.com/artist/13t1RROs40VnX8PtMUnBqc", // quevedo eug   
+  "https://open.spotify.com/artist/13t1RROs40VnX8PtMUnBqc", // quevedo eug
   "https://open.spotify.com/artist/55ru5B05MMBunM1tvH7Di6", // valentino merlo
   "https://open.spotify.com/artist/2Htm0q72SjGSmsy8EOIhRG", // los palmeras
   "https://open.spotify.com/artist/235Vf4hkmwvxjVEMuCbRxm", // rodrigo
@@ -160,7 +160,7 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/64DFKvGarD5nmkfaIiiakf", // la mona gimenez
   "https://open.spotify.com/artist/3ghRXw2nUEH2THaL82hw8R", // konga
   "https://open.spotify.com/artist/7dlkBH23ERFXxuNoMHq94Y", // q lokura
-  "https://open.spotify.com/artist/3UdkBrbQWdMoMPI4XATTC0", // desacatado 
+  "https://open.spotify.com/artist/3UdkBrbQWdMoMPI4XATTC0", // desacatado
   "https://open.spotify.com/artist/68mkWeq03e98dvIEI0jr0N", // walter olmos
   "https://open.spotify.com/artist/13KeE3TnUrYh367HJu0sMx", // mario luis
   "https://open.spotify.com/artist/2UqRkW2wfEkZmyvKyTTv2W", // ulises bueno
@@ -278,5 +278,4 @@ export const spotifyArtistsList = [
   "https://open.spotify.com/artist/7dtC84FkhalFSKToofOdOv", // floricienta
   "https://open.spotify.com/artist/5wKQ8RnelEGULisF5rlbtm", // luz gaggia
   "https://open.spotify.com/artist/5SqghR4PmacEuzlpIOQI2k", // bandana
-  
 ];

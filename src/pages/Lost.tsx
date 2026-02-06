@@ -9,7 +9,7 @@ const Lost = () => {
     useContext(GameContext);
   const { initializeArtists } = useInitialArtists();
 
-   useEffect(() => {
+  useEffect(() => {
     initializeArtists();
   }, []);
 
@@ -30,10 +30,11 @@ const Lost = () => {
       <div className="flex w-full max-w-6xl flex-col items-center gap-6">
         {/* Cartón central */}
         <div className="w-full max-w-md rounded-xl bg-black/60 p-8 text-center shadow-lg backdrop-blur-md transition-all duration-300 hover:shadow-xl">
-          <h1 className="text-4xl font-bold text-red-500 sm:text-5xl">¡Perdiste!</h1>
+          <h1 className="text-4xl font-bold text-red-500 sm:text-5xl">
+            ¡Perdiste!
+          </h1>
           <h2 className="mt-6 text-2xl font-semibold text-white sm:text-3xl">
-            Tu puntaje final fue{" "}
-            <span className="text-green-400">{score}</span>
+            Tu puntaje final fue <span className="text-green-400">{score}</span>
           </h2>
 
           <button
@@ -42,12 +43,12 @@ const Lost = () => {
             onClick={resetGame}
           >
             <div className="flex items-center justify-center gap-2">
-              Jugar de nuevo <AiOutlineArrowRight />
+              Jugar de nuevo
             </div>
           </button>
         </div>
 
-         <div className="mt-6 w-full max-w-xs">
+        <div className="mt-6 w-full max-w-xs">
           <Leaderboard userId={userId} currentScore={score} />
         </div>
       </div>

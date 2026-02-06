@@ -34,7 +34,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
   const [username, setUsername] = useState("");
   const [showUsernameInput, setShowUsernameInput] = useState(false);
 
- const styles = {
+  const styles = {
     container: {
       padding: "20px",
       maxWidth: "500px",
@@ -123,9 +123,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const scoresCollection: LeaderboardEntry[] = await response.json();
-        console.log(`[Leaderboard] Puntajes obtenidos de la API: ${scoresCollection.length} entradas`);
+        console.log(
+          `[Leaderboard] Puntajes obtenidos de la API: ${scoresCollection.length} entradas`
+        );
         scoresCollection.forEach((entry) => {
-          console.log(`[Leaderboard] Entrada: ${entry.username} - ${entry.score}`);
+          console.log(
+            `[Leaderboard] Entrada: ${entry.username} - ${entry.score}`
+          );
         });
         setScores(scoresCollection);
         console.log("[Leaderboard] Scores actualizados en el estado");
@@ -140,18 +144,22 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
   useEffect(() => {
     const highScore = localStorage.getItem("best-score");
     if (highScore) {
-      console.log(`[Leaderboard] HighScore cargado desde localStorage: ${highScore}`);
+      console.log(
+        `[Leaderboard] HighScore cargado desde localStorage: ${highScore}`
+      );
     } else {
       console.log("[Leaderboard] No se encontró highScore en localStorage");
       return;
     }
-    console.log(`[Leaderboard] Verificando puntaje - currentScore: ${currentScore}, highScore: ${highScore}`);
+    console.log(
+      `[Leaderboard] Verificando puntaje - currentScore: ${currentScore}, highScore: ${highScore}`
+    );
     console.log("[Leaderboard] Nuevo highScore detectado, mostrando input");
     setShowUsernameInput(true);
-    localStorage.removeItem("best-score")
-    console.log(`[Leaderboard] HighScore actualizado a ${currentScore} y guardado en localStorage`);
-    
-     
+    localStorage.removeItem("best-score");
+    console.log(
+      `[Leaderboard] HighScore actualizado a ${currentScore} y guardado en localStorage`
+    );
   }, [currentScore]);
 
   // Actualizar o crear la entrada en la DB a través de la API
@@ -161,7 +169,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
       return;
     }
 
-    console.log(`[Leaderboard] Iniciando updateScore para userId: ${userId}, username: ${username}, score: ${currentScore}`);
+    console.log(
+      `[Leaderboard] Iniciando updateScore para userId: ${userId}, username: ${username}, score: ${currentScore}`
+    );
     try {
       const response = await fetch("/api/leaderboard", {
         method: "POST",
@@ -178,12 +188,16 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
       const updatedScores: LeaderboardEntry[] = await response.json();
       console.log("[Leaderboard] Puntajes actualizados recibidos de la API");
       updatedScores.forEach((entry) => {
-        console.log(`[Leaderboard] Entrada actualizada: ${entry.username} - ${entry.score}`);
+        console.log(
+          `[Leaderboard] Entrada actualizada: ${entry.username} - ${entry.score}`
+        );
       });
       setScores(updatedScores);
       setShowUsernameInput(false);
       setUsername("");
-      console.log("[Leaderboard] Scores actualizados, input ocultado y username limpiado");
+      console.log(
+        "[Leaderboard] Scores actualizados, input ocultado y username limpiado"
+      );
     } catch (error) {
       console.error("[Leaderboard] Error en updateScore:", error);
     }
@@ -232,4 +246,3 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, currentScore }) => {
 };
 
 export default Leaderboard;
-

@@ -43,28 +43,28 @@ async function getSpotifyToken() {
   console.log("Token Spotify OK");
 }
 
-async function scrapeMonthlyListeners(url: string, page: Page): Promise<number | null> {
+async function scrapeMonthlyListeners(
+  url: string,
+  page: Page
+): Promise<number | null> {
   try {
     // console.log(`[OYENTES] Navegando a: ${url}`);
     await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-    
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const result = await page.evaluate(() => {
-   
       const bodyText = document.body.innerText;
       const match = bodyText.match(/(\d[\d,.\s]*\d)\s*oyentes\s*mensuales/i);
-      
+
       if (match && match[1]) {
         const cleaned = match[1].replace(/[^\d]/g, "");
-        
 
         if (cleaned.length >= 5 && cleaned.length <= 10) {
           return cleaned;
         }
       }
-      
+
       return null;
     });
 
@@ -76,9 +76,11 @@ async function scrapeMonthlyListeners(url: string, page: Page): Promise<number |
 
     console.log("[OYENTES] ❌ No encontrado");
     return null;
-
   } catch (err) {
-    console.error("[OYENTES] ❌ Error:", err instanceof Error ? err.message : err);
+    console.error(
+      "[OYENTES] ❌ Error:",
+      err instanceof Error ? err.message : err
+    );
     return null;
   }
 }
@@ -100,7 +102,6 @@ async function getArtistFromAPI(url: string) {
   }
 }
 
-
 async function saveToDatabase(data: any) {
   await ArtistModel.findOneAndUpdate(
     { spotifyId: data.spotifyId },
@@ -109,7 +110,6 @@ async function saveToDatabase(data: any) {
   );
   console.log(`Guardado: ${data.artist}`);
 }
-
 
 async function main() {
   let conn;
@@ -137,11 +137,10 @@ async function main() {
         listeners,
       });
 
-      await new Promise(res => setTimeout(res, 1500));
+      await new Promise((res) => setTimeout(res, 1500));
     }
 
     console.log("Terminado.");
-
   } finally {
     if (browser) await browser.close();
     if (conn) await mongoose.connection.close();

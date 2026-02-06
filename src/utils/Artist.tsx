@@ -15,12 +15,15 @@ export const getArtistList = async (): Promise<Array<Artist>> => {
   }
 };
 
-export const getRandomArtist = async (excludeIds: string[] = [], includeListeners: boolean = false): Promise<Artist | null> => {
+export const getRandomArtist = async (
+  excludeIds: string[] = [],
+  includeListeners: boolean = false
+): Promise<Artist | null> => {
   try {
     const response = await fetch("/api/artists/random", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ excludeIds, includeListeners }),
     });

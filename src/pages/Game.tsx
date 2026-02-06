@@ -9,10 +9,15 @@ import React from "react";
 import { getRandomArtist } from "@/utils/Artist";
 import { useInitialArtists } from "@/hooks/useInitialArtists";
 
-
-
 const Game = () => {
-  const { setHasUserLost, score, setScore, setIsButtonVisible, InitialRightArtist, InitialLeftArtist } = useContext(GameContext);
+  const {
+    setHasUserLost,
+    score,
+    setScore,
+    setIsButtonVisible,
+    InitialRightArtist,
+    InitialLeftArtist,
+  } = useContext(GameContext);
   const { fetchRandomArtist } = useInitialArtists();
   const [loading, setLoading] = useState(true);
   const [leftArtist, setLeftArtist] = useState<Artist>({
@@ -26,7 +31,7 @@ const Game = () => {
     image_url: "",
   });
 
-   const [highScore, setHighScore] = useState<number>(
+  const [highScore, setHighScore] = useState<number>(
     Number(window.localStorage.getItem("spotify-high-score")) || 0
   );
 
@@ -48,7 +53,6 @@ const Game = () => {
     }
   }, []);
 
-
   // Actualizar high score
   useEffect(() => {
     const storedHighScore =
@@ -61,8 +65,6 @@ const Game = () => {
     }
   }, [score]);
 
- 
-
   // Actualizar high score
   useEffect(() => {
     if (score > highScore) {
@@ -70,60 +72,60 @@ const Game = () => {
     }
   }, [score]);
 
-  
   const guessAnswer = async (guess: boolean) => {
-    
-
     try {
-        // Llamar a la API para comparar los listeners
-        const response = await fetch("/api/artists/compare", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                spotifyId: rightArtist.spotifyId, 
-                number: parseInt(leftArtist.listeners), 
-                isHigher: guess, 
-            }),
-        });
+      // Llamar a la API para comparar los listeners
+      const response = await fetch("/api/artists/compare", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          spotifyId: rightArtist.spotifyId,
+          number: parseInt(leftArtist.listeners),
+          isHigher: guess,
+        }),
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (!response.ok) {
-            throw new Error(result.error || "Error en la comparación");
-        }
+      if (!response.ok) {
+        throw new Error(result.error || "Error en la comparación");
+      }
 
-        const { listeners, isCorrect } = result;
-         
-        // Actualizar rightArtist con los listeners reales desde la API
-        // Crear una copia actualizada de rightArtist con los listeners
-        const updatedRightArtist = { ...rightArtist, listeners: listeners.toString() };
-        setIsButtonVisible(false);
-        // Actualizar el estado de rightArtist
-        setRightArtist(updatedRightArtist);
+      const { listeners, isCorrect } = result;
 
-        if (isCorrect) {
-            setScore((score) => score + 1);
-            const newArtist = await fetchRandomArtist();
+      // Actualizar rightArtist con los listeners reales desde la API
+      // Crear una copia actualizada de rightArtist con los listeners
+      const updatedRightArtist = {
+        ...rightArtist,
+        listeners: listeners.toString(),
+      };
+      setIsButtonVisible(false);
+      // Actualizar el estado de rightArtist
+      setRightArtist(updatedRightArtist);
 
-            setTimeout(() => {
-                if (newArtist) {
-                    setLeftArtist(updatedRightArtist); // Mover rightArtist a la izquierda
-                    setRightArtist(newArtist); // Nuevo artista a la derecha
-                }
-                setIsButtonVisible(true);
-            }, 2000);
-        } else {
-            setTimeout(() => {
-                setHasUserLost(true);
-                setIsButtonVisible(true);
-            }, 2000);
-        }
-    } catch (error) {
-        console.error("Error al procesar la respuesta:", error);
+      if (isCorrect) {
+        setScore((score) => score + 1);
+        const newArtist = await fetchRandomArtist();
+
         setTimeout(() => {
-            setHasUserLost(true); // Si falla la API, considera que perdió por seguridad
-            setIsButtonVisible(true);
+          if (newArtist) {
+            setLeftArtist(updatedRightArtist); // Mover rightArtist a la izquierda
+            setRightArtist(newArtist); // Nuevo artista a la derecha
+          }
+          setIsButtonVisible(true);
         }, 2000);
+      } else {
+        setTimeout(() => {
+          setHasUserLost(true);
+          setIsButtonVisible(true);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error al procesar la respuesta:", error);
+      setTimeout(() => {
+        setHasUserLost(true); // Si falla la API, considera que perdió por seguridad
+        setIsButtonVisible(true);
+      }, 2000);
     }
   };
 

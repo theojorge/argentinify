@@ -9,6 +9,9 @@ dotenv.config();
 const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI || process.env.VITE_MONGODB_URI;
+    if (!mongoUri) {
+        throw new Error("MONGODB_URI no está definida");
+    }
     const conn = await mongoose.connect(mongoUri);
     console.log(`MongoDB conectada: ${conn.connection.host}`);
     return conn;
@@ -119,7 +122,10 @@ async function main() {
     conn = await connectDB();
     await getSpotifyToken();
 
-    browser = await launch({ headless: "new", args: ["--no-sandbox"] });
+    browser = await launch({
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
 
     for (const url of spotifyArtistsList) {

@@ -6,7 +6,6 @@ import RightArtist from "@/components/RightArtist";
 import { useState, useEffect, useContext } from "react";
 import { GameContext } from "@/App";
 import React from "react";
-import { getRandomArtist } from "@/utils/Artist";
 import { useInitialArtists } from "@/hooks/useInitialArtists";
 
 const Game = () => {
@@ -72,44 +71,50 @@ const Game = () => {
     }
   }, [score]);
 
-  const guessAnswer = async (guess: boolean) => {
+   const guessAnswer = async (guess: boolean) => {
     try {
-      // Llamar a la API para comparar los listeners
-      const response = await fetch("/api/artists/compare", {
+      // Obtener los listeners del artista de la derecha
+      const response = await fetch("/api/artists/listeners", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           spotifyId: rightArtist.spotifyId,
-          number: parseInt(leftArtist.listeners),
-          isHigher: guess,
         }),
       });
 
-      const result = await response.json();
-
       if (!response.ok) {
-        throw new Error(result.error || "Error en la comparación");
+        throw new Error("Error al obtener los listeners");
       }
 
-      const { listeners, isCorrect } = result;
+      const { listeners } = await response.json();
 
-      // Actualizar rightArtist con los listeners reales desde la API
-      // Crear una copia actualizada de rightArtist con los listeners
+      // Actualizar rightArtist con los listeners reales
       const updatedRightArtist = {
         ...rightArtist,
         listeners: listeners.toString(),
       };
-      setIsButtonVisible(false);
-      // Actualizar el estado de rightArtist
+
+      const rightListeners = listeners; 
+      const leftListeners = parseInt(leftArtist.listeners);
+
+      // Comparación 
+      const isCorrect = guess
+        ? rightListeners > leftListeners
+        : rightListeners < leftListeners;
+
+      
       setRightArtist(updatedRightArtist);
+      setIsButtonVisible(false);
 
       if (isCorrect) {
         setScore((score) => score + 1);
+        
+        // Obtener el siguiente artista
         const newArtist = await fetchRandomArtist();
 
         setTimeout(() => {
           if (newArtist) {
-            setLeftArtist(updatedRightArtist); // Mover rightArtist a la izquierda
+            setLeftArtist(updatedRightArtist); // Mover rightArtist actualizado a la izquierda
             setRightArtist(newArtist); // Nuevo artista a la derecha
           }
           setIsButtonVisible(true);
@@ -123,7 +128,7 @@ const Game = () => {
     } catch (error) {
       console.error("Error al procesar la respuesta:", error);
       setTimeout(() => {
-        setHasUserLost(true); // Si falla la API, considera que perdió por seguridad
+        setHasUserLost(true);
         setIsButtonVisible(true);
       }, 2000);
     }
@@ -132,14 +137,14 @@ const Game = () => {
   if (loading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-gray-800 text-white">
-        <div className="text-2xl">Loading artists...</div>
+        <div className="text-2xl">Artistas llegando, no hubo presupuesto para un telonero...</div>
       </div>
     );
   }
 
   return (
     <React.Fragment>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transform select-none rounded-full bg-white p-8 text-lg font-bold shadow-sm transition duration-200 hover:scale-105">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform select-none rounded-full bg-white p-8 text-lg font-bold shadow-sm transition duration-200 hover:scale-105">
         VS
       </div>
       <div className="grid h-screen w-screen grid-rows-2 bg-gray-800 md:grid-cols-2">

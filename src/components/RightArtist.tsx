@@ -17,7 +17,7 @@ const RightArtist = (props: GuessArtist) => {
       }}
     >
       <h1 className="mt-4 px-4 text-center text-3xl font-bold text-white drop-shadow-md">
-        &quot;{artist}&quot;
+        {artist}
       </h1>
 
       <p className="m-4 text-center text-sm text-white drop-shadow-md">tiene</p>

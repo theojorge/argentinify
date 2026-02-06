@@ -5,7 +5,7 @@ import Leaderboard from "@/components/Leaderboard";
 import { useInitialArtists } from "@/hooks/useInitialArtists";
 
 const Lost = () => {
-  const { setHasUserLost, setHasGameStarted, score, setScore, userId } =
+  const { setHasUserLost, setHasGameStarted, score, setScore } =
     useContext(GameContext);
   const { initializeArtists } = useInitialArtists();
 
@@ -49,7 +49,7 @@ const Lost = () => {
         </div>
 
         <div className="mt-6 w-full max-w-xs">
-          <Leaderboard userId={userId} currentScore={score} />
+          <Leaderboard currentScore={score} />
         </div>
       </div>
 

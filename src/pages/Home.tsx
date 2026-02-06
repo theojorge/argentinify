@@ -1,17 +1,20 @@
 import { BsSpotify } from "react-icons/bs";
-import { AiOutlineArrowRight } from "react-icons/ai";
 import { GameContext } from "@/App";
 import { useContext, useEffect } from "react";
 import { useInitialArtists } from "@/hooks/useInitialArtists";
+import { useLeaderboardCache } from "@/hooks/useLeaderboardCache";
 //import { getArtistList } from "@/utils/Artist";
 
 const Home = () => {
-  const { setHasGameStarted } = useContext(GameContext);
+  const { setHasGameStarted, userId } = useContext(GameContext);
   const { initializeArtists } = useInitialArtists();
+  const { getLeaderboard } = useLeaderboardCache();
 
   useEffect(() => {
     initializeArtists();
-  }, []);
+    // Precargar leaderboard en segundo plano con userId
+    getLeaderboard(false, userId);
+  }, [userId]);
 
   const handleStart = async () => {
     localStorage.removeItem("best-score");

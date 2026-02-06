@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Game from "./pages/Game";
 import Lost from "./pages/Lost";
 import { GameContextType, Artist } from "./utils/Types";
-import { v4 as uuidv4 } from "uuid";
+import { useUserId } from "./hooks/useUserId";
 
 export const GameContext = createContext<GameContextType>({
   hasGameStarted: false,
@@ -35,16 +35,10 @@ const App = () => {
   const [InitialLeftArtist, setInitialLeftArtist] = useState<Artist | null>(
     null
   );
-  const [userId, setUserId] = useState(() => {
-    // Intenta obtener el userId del localStorage
-    const storedUserId = localStorage.getItem("userId");
-    return storedUserId ? storedUserId : uuidv4(); // Genera uno nuevo si no existe
+  const userId = useUserId();
+  const [setUserId] = useState(() => (id: string) => {
+    console.log(`[App] UserId actualizado: ${id}`);
   });
-
-  useEffect(() => {
-    // Almacena el userId en localStorage
-    localStorage.setItem("userId", userId);
-  }, [userId]);
 
   const contextValue = useMemo(() => {
     return {

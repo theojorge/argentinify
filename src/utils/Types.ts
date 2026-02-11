@@ -24,6 +24,8 @@ export interface GameContextType {
   setHasUserLost: (value: boolean) => void;
   score: number;
   setScore: (value: React.SetStateAction<number>) => void;
+  pendingBestScore: number | null;
+  setPendingBestScore: (value: number | null) => void;
   isButtonVisible: boolean;
   setIsButtonVisible: (value: boolean) => void;
   InitialRightArtist: Artist | null;
@@ -31,5 +33,4 @@ export interface GameContextType {
   InitialLeftArtist: Artist | null;
   setInitialLeftArtist: (artist: Artist | null) => void;
   userId: string;
-  setUserId: (id: string) => void;
 }

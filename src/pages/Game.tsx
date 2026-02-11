@@ -13,6 +13,7 @@ const Game = () => {
     setHasUserLost,
     score,
     setScore,
+    setPendingBestScore,
     setIsButtonVisible,
     InitialRightArtist,
     InitialLeftArtist,
@@ -58,18 +59,11 @@ const Game = () => {
       Number(window.localStorage.getItem("spotify-high-score")) || 0;
 
     if (score > storedHighScore) {
-      window.localStorage.setItem("best-score", score.toString());
       window.localStorage.setItem("spotify-high-score", score.toString());
+      setPendingBestScore(score);
       setHighScore(score);
     }
-  }, [score]);
-
-  // Actualizar high score
-  useEffect(() => {
-    if (score > highScore) {
-      setHighScore(score);
-    }
-  }, [score]);
+  }, [score, setPendingBestScore]);
 
   const guessAnswer = async (guess: boolean) => {
     try {

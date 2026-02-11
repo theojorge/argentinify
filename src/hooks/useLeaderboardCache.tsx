@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface LeaderboardEntry {
   userId: string;
@@ -28,7 +28,7 @@ export const useLeaderboardCache = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Cargar leaderboard desde la API y guardar en localStorage
-  const loadLeaderboard = async (userId?: string) => {
+  const loadLeaderboard = useCallback(async (userId?: string) => {
     try {
       console.log("[LeaderboardCache] Cargando leaderboard desde API...");
       const url = userId
@@ -62,12 +62,13 @@ export const useLeaderboardCache = () => {
       setIsLoaded(true);
       return { leaderboard: [], userInfo: null };
     }
-  };
+  }, []);
 
   // Obtener leaderboard desde caché o cargar si es necesario
-  const getLeaderboard = async (forceRefresh = false, userId?: string) => {
+  const getLeaderboard = useCallback(async (forceRefresh = false, userId?: string) => {
     const cached = localStorage.getItem("cached-leaderboard");
     const timestamp = localStorage.getItem("leaderboard-timestamp");
+    const cachedUserInfo = localStorage.getItem("cached-userinfo");
 
     // Si hay caché y no es muy viejo (5 minutos), usarlo
     if (!forceRefresh && cached && timestamp) {
@@ -77,21 +78,27 @@ export const useLeaderboardCache = () => {
       if (age < fiveMinutes) {
         console.log("[LeaderboardCache] Usando leaderboard desde localStorage");
         setCachedLeaderboard(JSON.parse(cached));
-        setIsLoaded(true);
-        // Si tenemos userId, obtener información actualizada del servidor
-        if (userId) {
-          return await loadLeaderboard(userId);
+        if (cachedUserInfo) {
+          try {
+            setUserInfo(JSON.parse(cachedUserInfo));
+          } catch {
+            // ignore
+          }
         }
-        return { leaderboard: JSON.parse(cached), userInfo: null };
+        setIsLoaded(true);
+        return {
+          leaderboard: JSON.parse(cached),
+          userInfo: cachedUserInfo ? JSON.parse(cachedUserInfo) : null,
+        };
       }
     }
 
     // Si no hay caché o es viejo, cargar desde API
     return await loadLeaderboard(userId);
-  };
+  }, [loadLeaderboard]);
 
   // Actualizar userInfo cuando se recibe del POST
-  const updateUserInfo = (
+  const updateUserInfo = useCallback((
     newUserInfo: UserInfo | null,
     newLeaderboard?: LeaderboardEntry[]
   ) => {
@@ -114,7 +121,7 @@ export const useLeaderboardCache = () => {
       );
       localStorage.setItem("leaderboard-timestamp", Date.now().toString());
     }
-  };
+  }, []);
 
   // Cargar userInfo desde localStorage al montar
   useEffect(() => {
@@ -131,7 +138,6 @@ export const useLeaderboardCache = () => {
     }
   }, []);
 
-  // Precargar leaderboard al montar el hook
   useEffect(() => {
     getLeaderboard();
   }, []);

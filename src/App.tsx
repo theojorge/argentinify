@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import { useState, createContext, useMemo, useEffect } from "react";
+import { useState, createContext, useMemo } from "react";
 import Home from "./pages/Home";
 import Game from "./pages/Game";
 import Lost from "./pages/Lost";
@@ -14,6 +14,8 @@ export const GameContext = createContext<GameContextType>({
   setHasUserLost: () => {},
   score: 0,
   setScore: () => {},
+  pendingBestScore: null,
+  setPendingBestScore: () => {},
   isButtonVisible: true,
   setIsButtonVisible: () => {},
   InitialRightArtist: null,
@@ -21,13 +23,13 @@ export const GameContext = createContext<GameContextType>({
   InitialLeftArtist: null,
   setInitialLeftArtist: () => {},
   userId: "",
-  setUserId: (id: string) => {},
 });
 
 const App = () => {
   const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
   const [hasUserLost, setHasUserLost] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
+  const [pendingBestScore, setPendingBestScore] = useState<number | null>(null);
   const [isButtonVisible, setIsButtonVisible] = useState<boolean>(true);
   const [InitialRightArtist, setInitialRightArtist] = useState<Artist | null>(
     null
@@ -36,9 +38,6 @@ const App = () => {
     null
   );
   const userId = useUserId();
-  const [setUserId] = useState(() => (id: string) => {
-    console.log(`[App] UserId actualizado: ${id}`);
-  });
 
   const contextValue = useMemo(() => {
     return {
@@ -48,6 +47,8 @@ const App = () => {
       setHasUserLost,
       score,
       setScore,
+      pendingBestScore,
+      setPendingBestScore,
       isButtonVisible,
       setIsButtonVisible,
       InitialRightArtist,
@@ -55,13 +56,13 @@ const App = () => {
       InitialLeftArtist,
       setInitialLeftArtist,
       userId,
-      setUserId,
     };
   }, [
     hasGameStarted,
     hasUserLost,
     score,
     isButtonVisible,
+    pendingBestScore,
     InitialRightArtist,
     InitialLeftArtist,
     userId,

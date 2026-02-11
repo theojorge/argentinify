@@ -4,7 +4,7 @@ import Leaderboard from "@/components/Leaderboard";
 import { useInitialArtists } from "@/hooks/useInitialArtists";
 
 const Lost = () => {
-  const { setHasUserLost, setHasGameStarted, score, setScore } =
+  const { setHasUserLost, setHasGameStarted, score, setScore, setPendingBestScore } =
     useContext(GameContext);
   const { initializeArtists } = useInitialArtists();
 
@@ -14,6 +14,7 @@ const Lost = () => {
 
   const resetGame = async () => {
     setScore(0);
+    setPendingBestScore(null);
     setHasUserLost(false);
     setHasGameStarted(true);
   };

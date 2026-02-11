@@ -14,16 +14,17 @@ interface LeaderboardProps {
 }
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
-  const { userId } = useContext(GameContext);
+  const { userId, pendingBestScore, setPendingBestScore } =
+    useContext(GameContext);
   const {
     cachedLeaderboard,
     userInfo,
     getLeaderboard,
-    loadLeaderboard,
     updateUserInfo,
   } = useLeaderboardCache();
   const [username, setUsername] = useState("");
   const [showUsernameInput, setShowUsernameInput] = useState(false);
+  const [scoreToSubmit, setScoreToSubmit] = useState<number | null>(null);
   const [showRecommendationForm, setShowRecommendationForm] = useState(false);
   const [artistRecommendation, setArtistRecommendation] = useState("");
   const [recommendationMessage, setRecommendationMessage] = useState("");
@@ -32,6 +33,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
   const styles = {
     container: {
       padding: "20px",
+      width: "100%",
       maxWidth: "500px",
       margin: "0 auto",
       backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -60,6 +62,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
       backgroundColor: "rgba(255, 255, 255, 0.1)",
       borderRadius: "5px",
       color: "white",
+      gap: "12px",
     },
     inputContainer: {
       marginTop: "20px",
@@ -86,7 +89,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
       fontSize: "16px",
       borderRadius: "5px",
       border: "1px solid #ccc",
-      width: "200px",
+      width: "100%",
+      maxWidth: "240px",
     },
     button: {
       padding: "10px 20px",
@@ -180,19 +184,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
 
   // Verificar si currentScore supera highScore y mostrar el input
   useEffect(() => {
-    const highScore = localStorage.getItem("best-score");
-    if (highScore) {
-      console.log(
-        `[Leaderboard] HighScore cargado desde localStorage: ${highScore}`
-      );
-    } else {
-      console.log("[Leaderboard] No se encontró highScore en localStorage");
+    if (pendingBestScore === null) {
       return;
     }
-    console.log(
-      `[Leaderboard] Verificando puntaje - currentScore: ${currentScore}, highScore: ${highScore}`
-    );
-    console.log("[Leaderboard] Nuevo highScore detectado, mostrando input");
 
     // Cargar el username existente del usuario desde userInfo
     if (userInfo && userInfo.username) {
@@ -203,11 +197,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
     }
 
     setShowUsernameInput(true);
-    localStorage.removeItem("best-score");
-    console.log(
-      `[Leaderboard] HighScore actualizado a ${currentScore} y guardado en localStorage`
-    );
-  }, [currentScore, userInfo]);
+    setScoreToSubmit(pendingBestScore);
+  }, [pendingBestScore, userInfo]);
 
   // Actualizar o crear la entrada en la DB a través de la API
   const updateScore = async () => {
@@ -216,8 +207,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
       return;
     }
 
+    const score = scoreToSubmit ?? currentScore;
+
     console.log(
-      `[Leaderboard] Iniciando updateScore para userId: ${userId}, username: ${username}, score: ${currentScore}`
+      `[Leaderboard] Iniciando updateScore para userId: ${userId}, username: ${username}, score: ${score}`
     );
     try {
       const response = await fetch("/api/leaderboard", {
@@ -225,7 +218,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId, username, score: currentScore }),
+        body: JSON.stringify({ userId, username, score }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -247,6 +240,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
 
       setShowUsernameInput(false);
       setUsername("");
+      setScoreToSubmit(null);
+      setPendingBestScore(null);
 
       // Mostrar recomendación si está en top 10 y puede recomendar
       if (userInTop10 && updatedScores.userInfo?.canRecommend) {
@@ -258,6 +253,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
     } catch (error) {
       console.error("[Leaderboard] Error en updateScore:", error);
     }
+  };
+
+  const cancelUsername = () => {
+    setShowUsernameInput(false);
+    setScoreToSubmit(null);
+    setPendingBestScore(null);
   };
 
   // Enviar recomendación de artista
@@ -358,6 +359,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore }) => {
               style={styles.button}
             >
               Enviar
+            </button>
+            <button
+              onClick={cancelUsername}
+              style={{ ...styles.button, backgroundColor: "#6b7280" }}
+            >
+              Cancelar
             </button>
           </div>
         </div>

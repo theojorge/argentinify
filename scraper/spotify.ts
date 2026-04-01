@@ -25,7 +25,7 @@ const artistSchema = new mongoose.Schema(
   {
     spotifyId: { type: String, unique: true, required: true },
     artist: { type: String, required: true },
-    followers: { type: Number, required: true },
+    followers: { type: Number},
     listeners: { type: Number, required: true },
     image_url: { type: String, required: true },
     updatedAt: { type: Date, default: Date.now },
@@ -91,16 +91,28 @@ async function scrapeMonthlyListeners(
 async function getArtistFromAPI(url: string) {
   try {
     const id = url.split("/artist/")[1].split("?")[0];
-    const data = await spotifyApi.getArtist(id);
+
+    const token = spotifyApi.getAccessToken();
+    const res = await fetch(`https://api.spotify.com/v1/artists/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const body = await res.json();
+
+    if (!body.name) {
+      console.warn(`[SKIP] Respuesta inválida para ID: ${id}`);
+      return null;
+    }
+
+    console.log(`${body.name} (${id})`);
 
     return {
       spotifyId: id,
-      artist: data.body.name,
-      followers: data.body.followers.total,
-      image_url: data.body.images[0]?.url || "",
+      artist: body.name,
+      image_url: body.images?.[0]?.url || "",
     };
-  } catch (e) {
-    console.error("API error:", e);
+  } catch (e: any) {
+    console.error(`[ERROR] CATCH:`, e?.message);
     return null;
   }
 }
